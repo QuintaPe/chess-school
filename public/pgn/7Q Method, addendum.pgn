@@ -1,0 +1,1357 @@
+﻿[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "QUESTION 1: What problems"]
+[Black "does the opponent have?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[PlyCount "0"]
+[SourceVersionDate "2024.05.15"]
+
+{https://chessmood.com/course/chess-planning-7q-method/episode/6469}  *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q1 - Example 1"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "5rk1/2p1qppp/1p1pb3/4p3/2P5/P1P1PP2/4Q1PP/3R1NK1 b - - 0 1"]
+[PlyCount "7"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.07.14"]
+
+{[#] [#]} 1... Ra8 (1... f5) 2. Ra1 (2. Qa2 Ra4 {[%csl Rc4]} 3. Nd2 Qe8) 2...
+Ra4 3. Nd2 Qe8 (3... Qd7) 4. Z0 Qc6 (4... Qa8) *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q1 - Example 2"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r4rk1/1q3p1p/p3pp2/np6/8/1P3N2/P1P2PPP/R2QR1K1 w - - 0 1"]
+[PlyCount "11"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2022.09.06"]
+
+{[#] [#]} 1. Qd2 (1. Qd4 Qe7) (1. a4) 1... Nc6 2. Qh6 Qe7 (2... f5 3. Ng5 f6 4.
+Nxe6) 3. Re4 f5 (3... Kh8 4. Rh4) 4. Ng5 (4. Rh4 f6) 4... f6 (4... fxe4 5.
+Qxh7#) 5. Rxe6 $18 Qd7 6. Rxf6 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q1 - Example 3"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "2r1r1k1/p1q1b1p1/1pn2p1p/2p1pN2/8/PP1P2P1/4PPBP/R1Q2RK1 w - - 0 1"]
+[PlyCount "9"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.07.21"]
+
+{[#] [#]} 1. Qc4+ Kh8 (1... Kh7 2. Be4) 2. Qg4 (2. Rfb1) 2... Bf8 3. Be4 Qf7 4.
+Nh4 Rc7 (4... Ne7 5. Ng6+ Nxg6 (5... Kg8 6. Nxe7+) 6. Bxg6) 5. Qf5 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q1 - Example 4"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r4rk1/2p1bppp/3pq3/pP2p3/P3P3/3P4/4NPPP/R2Q1RK1 w - - 0 1"]
+[PlyCount "7"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.07.14"]
+
+{[#] [#]} 1. Rc1 (1. f4) 1... Rfc8 (1... Bd8 2. Rc6 Z0 3. Nc3 Z0 4. Nd5 Z0 (
+4... Z0 5. Qc2 Z0 6. Rc1) 5. Qd2 Z0 6. Rfc1) (1... Rac8 2. Nc3 (2. Qd2) 2... c6
+) 2. Rc6 (2. Nc3 c6) 2... Z0 3. Nc3 Z0 4. Nd5 {[%cal Gd1c2,Gf1c1]} *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q1 - Example 5"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "2r1nr2/2q3kp/1p1pbpp1/p7/2PpPQ2/1P1P2NP/P2B1RP1/4R2K w - - 0 1"]
+[PlyCount "5"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.07.27"]
+
+{[#] [#]} 1. Ne2 $1 (1. h4) (1. Nf5+) (1. Qh6+) (1. Ref1) (1. Bc1 $144) 1...
+Qc5 2. Bc1 Z0 3. Bb2 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "QUESTION 2"]
+[Black "What problems do I have?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[PlyCount "0"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2024.05.15"]
+
+{https://chessmood.com/course/chess-planning-7q-method/episode/6476}  *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q2 - Example 1"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "1k1rr3/p1p2p2/1pbqpbp1/3p4/3P1P2/2PB2N1/PP1Q1P1P/1K2R2R w - - 0 1"]
+[PlyCount "7"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2022.09.11"]
+
+{[#] [#]} 1. h4 $1 (1. Z0 Rh8 2. Z0 Rh4 3. Ne2 (3. Z0 Rdh8) 3... Rdh8) 1... Rh8
+2. h5 gxh5 3. Nxh5 Be7 4. f5 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q2 - Example 2"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "2r2r1k/1pp1b1p1/2n5/p3p2q/P1B1P2p/1NP4P/1PQ1RP2/R5K1 w - - 0 1"]
+[PlyCount "7"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.03.16"]
+
+{[#] [#]} 1. Be6 (1. Kh2 Qh6 {[%csl Rh3][%cal Rc4e6,Gh6f4,Ge7g5,Gg5f4,Gf8f3]}
+2. Rg1 Qf4+ 3. Kh1 Qf3+) 1... Rcd8 2. Bg4 Qg6 3. Kh1 Z0 4. Rg1 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q2 - Example 4"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "2b1rr1k/ppp1n1pp/3qp3/3p4/P2P3Q/2PN2N1/1P3PPP/R4RK1 b - - 0 1"]
+[PlyCount "7"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.07.27"]
+
+{[#]} 1... Ng6 $1 (1... Nc6 $2 2. f4) (1... b6 2. Ne5) 2. Qg5 e5 $1 3. dxe5
+Nxe5 4. Nxe5 Rxe5 (4... Qxe5) *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q2 - Example 4"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r4rk1/1p2q1pp/p3ppn1/3p4/8/3PPQ2/PPRB1PPP/2R3K1 b - - 0 1"]
+[PlyCount "3"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.07.27"]
+
+{[#]} 1... Ne5 $1 (1... Qd7 2. Rc7) (1... Rfd8 2. Ba5) (1... f5) 2. Qe2 Nc6 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q2 - Example 5"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "2rqr1k1/1bp2ppp/4pb2/p2p4/1pP1P3/1P1P1N2/P2QBPPP/2R2RK1 w - - 0 1"]
+[PlyCount "7"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.07.27"]
+
+{[#] [#]} 1. e5 $1 (1. exd5 Bc3 2. Qd1 exd5 3. c5 Qe7) (1. cxd5 Bc3 2. Qf4 exd5
+3. e5 c5) 1... Be7 2. c5 $1 (2. d4 c5) 2... d4 (2... Z0 3. d4) 3. c6 Ba6 4. Qf4
+*
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "QUESTION 3: Where am I strong?"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[PlyCount "0"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2024.05.15"]
+
+{https://chessmood.com/course/chess-planning-7q-method/episode/6483}  *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q3 - Example 1"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r4rk1/pp2qppp/2n1p1n1/2P5/8/1P4P1/P1Q1NPBP/R1R3K1 w - - 0 1"]
+[PlyCount "3"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.03.16"]
+
+{[#] [#]} 1. Rab1 (1. a3 Rfd8 2. b4 a6) (1. h4 Nge5 2. h5 h6) (1. Qc3 $5 a5 2.
+a3) 1... a5 (1... Rfd8 2. b4 a6 3. a4 Rac8 4. b5 axb5 5. axb5) 2. a3 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q3 - Example 2"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r4rk1/3bqppp/p1n1p1n1/8/8/1PB1QNP1/P1B2P1P/R4RK1 w - - 0 1"]
+[PlyCount "6"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.03.17"]
+
+{[#] [#]} 1. h4 (1. Rfe1) (1. a3) (1. Rad1) 1... Rfd8 (1... h5 2. Ng5 (2. Bxg6
+fxg6 3. Ng5)) (1... h6 2. h5 Nh8) (1... Z0 2. h5 Nh8) 2. h5 Nf8 3. h6 g6 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q3 - Example 3"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "1b2rrk1/pp1q1pp1/5n1p/2Pp4/3Pp3/PP4N1/5PPP/R2QRNK1 b - - 0 1"]
+[PlyCount "3"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.03.16"]
+
+{[#]} 1... Nh7 $1 (1... g6 $5) 2. b4 (2. Ne2 f5 3. Qd2 f4) (2. f3 f5 3. fxe4
+dxe4 {[%csl Gf4][%cal Gh7f6,Gf5f4]}) 2... f5 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q3 - Example 4"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r3r1k1/pp1q1pb1/3n2pp/3Pp3/4P3/1P1QB1NP/2P3P1/3R1RK1 w - - 0 1"]
+[PlyCount "3"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.03.17"]
+
+{[#] [#]} 1. c4 (1. Ne2) (1. Rf2 Z0 2. Rdf1) (1. Qd2) 1... b6 (1... a5 2. c5)
+2. b4 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q3 - Example 5"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "3qrrk1/2n2ppp/2n1p3/1pPp4/1P3P2/1P6/1B1Q2PP/2R1NRK1 b - - 0 1"]
+[PlyCount "5"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.03.16"]
+
+{[#]} 1... f6 $1 (1... d4 2. Nf3) 2. Nf3 (2. Z0 e5) 2... e5 3. Rfe1 d4 {
+[%cal Gd8d5,Gc7d5]} *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "QUESTION 4: Which of my pieces"]
+[Black "can be happier?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[PlyCount "0"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2024.05.15"]
+
+{https://chessmood.com/course/chess-planning-7q-method/episode/6490}  *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q4 - Example 1"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r5k1/p1brq1pp/1p1n4/2p1p3/2PpP3/3P1N2/PPB1Q1PP/R4RK1 w - - 0 2"]
+[PlyCount "11"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.07.21"]
+
+{[#] [#]} 2. Ba4 Rdd8 3. Bc6 Rab8 4. Bd5+ Kh8 5. h4 (5. Rf2 Z0 6. Raf1) 5... h6
+(5... Rf8 6. Ng5 {[%cal Ge2h5,Gg5e6]}) (5... Z0 6. Ng5) 6. Ng5 hxg5 7. Qh5# *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q4 - Example 2"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "4rrk1/1q3b1p/pp2p1p1/3p1p2/3P1P2/1NP3P1/PP1QR2P/4R1K1 w - - 0 1"]
+[PlyCount "5"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.07.21"]
+
+{[#] [#]} 1. Nc1 Qc7 (1... Z0 2. Nd3 Z0 3. Ne5 Z0 4. Rg2) 2. Nd3 Kg7 3. Ne5 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q4 - Example 3"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "4r1k1/pp1b1r1p/5qp1/2p2p2/2P1pP2/1P2P2P/P1Q3PB/3R1RK1 w - - 0 1"]
+[PlyCount "5"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.07.26"]
+
+{[#]} 1. Bg3 (1. Rd2 Bc6 2. Rfd1) 1... Bc6 2. Be1 Rd8 (2... Z0 3. Bc3 Qe6 4.
+Bb2 Z0 5. Qc3) 3. Bc3 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q4 - Example 4"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Aveitk"]
+[SetUp "1"]
+[FEN "4rrk1/pp2n2p/2pq2p1/3p1p2/3P4/2PQ1P2/PP2B1PP/4RRK1 b - - 0 1"]
+[PlyCount "15"]
+[EventDate "2024.05.15"]
+
+{[#]} 1... f4 2. Bd1 Nf5 3. Re2 (3. Rxe8 Rxe8) 3... Ne3 4. Rfe1 Re7 5. Z0 Rfe8
+6. Z0 g5 7. Z0 Rg7 8. Z0 h5 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q4 - Example 5"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "1rbq1rk1/p2n2b1/2pp1pp1/2p1p3/4P3/1PNP1NQ1/P1PB2PP/R4RK1 b - - 0 14"]
+[PlyCount "2"]
+[EventDate "2024.05.15"]
+[TimeControl "300+3"]
+
+{[#]} 14... g5 {[%emt 0:00:10]} 15. Nd1 {[%emt 0:01:16]} (15. h4 gxh4 16. Nxh4)
+*
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "QUESTION 5: Which pieces do"]
+[Black "I want to trade?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[PlyCount "0"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2024.05.15"]
+
+{https://chessmood.com/course/chess-planning-7q-method/episode/6524}  *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q5 - Example 1"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r4rk1/3bq1p1/3bp2p/1p1p1p2/p2P1P2/P1N1P2P/1P1B2P1/R2QR1K1 w - - 0 1"]
+[PlyCount "5"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.03.30"]
+
+{[#] [#]} 1. Na2 Rfc8 (1... g5 2. Bb4 gxf4 3. exf4) (1... Bb8 2. Bb4) (1... Z0
+2. Bb4 Z0 3. Bxd6 Qxd6 {[%csl Ga2]} 4. Nb4 Z0 5. Nd3) 2. Bb4 Bxb4 (2... Rc4 3.
+Bxd6 Qxd6 4. Nb4 {[%cal Gd1d2,Ga1c1,Gb4d3]}) 3. Nxb4 {[%cal Gd1d2,Ga1c1,Gb4d3]}
+*
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q5 - Example 2"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r1bqr1k1/pp4pp/4pn2/2Bp1p2/3P1P2/1P1NP3/P5PP/R2Q1RK1 b - - 0 1"]
+[PlyCount "7"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.03.30"]
+
+{[#] [#]} 1... b6 $1 (1... Ne4 2. Ba3 b6 3. Ne5) (1... Bd7 2. a4) 2. Ba3 Ba6 3.
+Re1 Bxd3 4. Qxd3 Ne4 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q5 - Example 3"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r2qr1k1/1p3pbp/6p1/p2p4/Pn1P4/1Q2PNP1/5PBP/1R1R2K1 w - - 0 1"]
+[PlyCount "5"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.03.23"]
+
+{[#] [#]} 1. Ne1 (1. Qxb4 Z0 2. Qb3 {[#]} Z0 3. Ne1 {[%csl Rb7,Rd5]}) 1... Qd7
+(1... Z0 2. Nd3 {[%csl Rb7,Rd5]}) 2. Nd3 Nxd3 (2... Bf8 3. Nxb4 axb4 4. Bxd5
+Rxa4 5. Bxf7+) 3. Rxd3 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q5 - Example 4"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "1r2b1rk/p6p/n7/2p1qPp1/Pp1pP1P1/1P6/1BP2QB1/2R1R1K1 w - - 0 1"]
+[PlyCount "7"]
+[EventDate "2024.05.15"]
+
+{[#] [#]} 1. Bf1 (1. Re3 Bf7 2. Qg3 Rbe8 3. Qxe5+ Rxe5) 1... Nc7 2. Qh2 Qxh2+ (
+2... Qe7 3. e5) 3. Kxh2 Z0 4. e5 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q5 - Example 5"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r3r1k1/p3bppp/1pppq3/4p3/P1P1P3/2NPQ3/1P3PPP/2R2RK1 w - - 0 1"]
+[PlyCount "3"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.07.23"]
+
+{[#] [#]} 1. b4 $1 (1. a5 bxa5 2. Ra1 Bd8) 1... Z0 (1... a6 2. Qxb6) (1... Z0
+2. b5 Rac8 3. bxc6 Rxc6 4. Nd5 {[%csl Gd5]}) 2. b5 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "QUESTION 6: What's the"]
+[Black "opponent's next move/plan?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[PlyCount "0"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2024.05.15"]
+
+{https://chessmood.com/course/chess-planning-7q-method/episode/6639}  *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q6 - Example 1"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r4r2/p1q2pkp/1p4p1/n1p5/4p3/2P1P3/PP1BQPPP/3RR1K1 b - - 0 1"]
+[PlyCount "4"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.07.29"]
+
+{[#] [#]} 1... Z0 (1... c4 2. Z0 (2. Z0 b5 3. Z0 Nb7 4. Z0 Nc5 5. Z0 Nd3) 2...
+Rad8 3. Z0 Rd3 4. Bc1 Z0 5. Rxd3 Z0 (5... cxd3)) 2. c4 Z0 (2... Nc6 3. Bc3+ Kg8
+) 3. Bc3+ *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q6 - Example 2"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r2qr1k1/p1p2ppp/1pn2n2/8/2P1pP2/BQP1P3/P5PP/R3RBK1 b - - 0 2"]
+[PlyCount "5"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.07.15"]
+
+{[#] [#]} 2... Na5 $1 (2... Qc8 3. c5) (2... Z0 3. c5) (2... Nd7 3. Rad1) 3.
+Qa4 c5 4. Bxc5 bxc5 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q6 - Example 3"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r1br2k1/pp3qpp/2p2n2/2Bp1p2/3P1P2/1P2P3/P5PP/R1NQR1K1 b - - 0 1"]
+[PlyCount "6"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.07.18"]
+
+{[#]} 1... b6 2. Ba3 Ba6 3. Nd3 Bxd3 4. Qxd3 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q6 - Example 4"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r3r1k1/ppbnqppp/2p5/4p3/P1B1P3/2P1BP2/1P3QPP/R4RK1 w - - 0 1"]
+[PlyCount "5"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.07.23"]
+
+{[#] [#]} 1. a5 (1. Bxa7 Rxa7 2. Qxa7 Bb6+) (1. Rfd1 Bb6) (1. Z0 Bb6) 1... Bd6
+(1... Z0 2. Bxa7 Rxa7 3. Qxa7) 2. b4 $1 (2. Rfd1 Bc5 3. Rxd7 Bxe3 4. Rxe7 Bxf2+
+5. Kxf2 Rxe7) (2. Bxa7 Rxa7 3. Qxa7 Bc5+) 2... c5 3. b5 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Q6 - Example 5"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r1b2r2/1ppnq1kp/3p1np1/p2Pp3/2P1Pp2/P1NQ1N2/1PB2PPP/R2R2K1 b - - 0 1"]
+[PlyCount "7"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.07.27"]
+
+{[#] [#]} 1... Nc5 $1 (1... Z0 2. b4) (1... Z0 2. b4) (1... a4 2. b4 axb3 3.
+Bxb3) 2. Qe2 a4 $1 3. Z0 Kh8 4. Z0 Rg8 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "QUESTION 7:"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[PlyCount "0"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2024.05.15"]
+
+{https://chessmood.com/course/chess-planning-7q-method/episode/6646}  *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "1. A rare situation"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r6r/pp3kpp/2p1bp2/4p3/4P3/4BP2/PPPR2PP/R3K3 w Q - 0 1"]
+[PlyCount "31"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.07.25"]
+
+{[#]} 1. a4 {[%csl Ga4][%cal Ga2a4]} (1. Rad1 Z0) (1. a3 Z0 2. Rad1) 1... a5 (
+1... Z0 2. a5 a6 (2... Z0 3. Ra4 Z0 4. Rb4) (2... Rad8 3. Rxd8 Rxd8) 3. Bb6 (3.
+b3 Z0 4. Rd3) (3. Ra4 Z0 4. Rb4 {[%csl Rb7]} Rab8 5. Ba7)) (1... b6 2. b4 (2.
+a5 c5 3. Rd6) 2... Z0 (2... a5 3. Bxb6 axb4 4. a5) (2... Z0 3. a5) 3. a5 b5 4.
+Rd6 Rhc8 5. a6) 2. Rad1 Z0 3. b3 Z0 4. c4 Z0 5. Rd6 Z0 6. R1d3 Z0 7. Kd2 Z0 8.
+Kc3 Z0 9. b4 axb4+ 10. Kxb4 Z0 11. a5 Z0 12. Bb6 Z0 13. Kc5 Z0 14. Rd7+ Bxd7
+15. Rxd7+ Ke6 16. Rxb7 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "2. Push the pawns"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r3r1k1/pp3ppp/2p1bn2/3pN3/3P4/2PB1P2/PP1KR1PP/4R3 w - - 0 1"]
+[PlyCount "14"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.07.27"]
+
+1. g4 $1 (1. Z0) 1... g5 (1... Z0 2. h4 Z0 3. h5 Z0 4. Rh2 {[%cal Gg4g5]}) (
+1... h6 2. h4) (1... Nd7 2. Nxd7 Bxd7 3. Re7 (3. Rxe8+ Rxe8) 3... Rxe7 (3...
+Rad8 4. Rxd7) 4. Rxe7 Rd8 5. Bf5 Bxf5 6. gxf5 Rb8 7. Z0 Kf8 8. Rc7) 2. h4 h6 (
+2... gxh4 3. Rh2 Z0 4. Rxh4 {[%csl Rh7]} Z0 5. Reh1) 3. Rh2 Kg7 4. Reh1 Rh8 5.
+b4 Z0 6. a4 Z0 7. a5 a6 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "3. What about middlegame?"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "3r2k1/1ppq2pp/p2rnp2/4p3/4P3/P3BP2/1PP2QPP/2R1R1K1 b - - 0 1"]
+[PlyCount "17"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.09.20"]
+
+{[#] [#]} 1... a5 (1... Z0 2. f4 exf4 3. Bxf4 Nxf4 4. Qxf4 Re8 5. e5 fxe5 6.
+Rxe5 Rd1+ 7. Rxd1 Qxd1+ 8. Kf2 Rf8 9. Rf5 Qxc2+) (1... Z0 2. g3 Z0 3. f4 exf4
+4. gxf4 Qc6 5. e5 fxe5 6. fxe5 Rd5 7. Bf4 Rf8) (1... Qb5 2. b3) 2. b3 (2. Kh1
+a4 3. Kg1 Qb5) (2. Z0 a4) 2... a4 3. Kh1 (3. b4 Qc6 4. c4 (4. Z0 Qc3) 4... Rd3)
+3... Ra8 4. b4 (4. Ra1 axb3 (4... Qc6 5. Z0 Qc3) 5. cxb3 Rd3 6. b4 (6. Qb2 Qb5)
+6... Raxa3) 4... Rd8 (4... Qc6 5. c4 (5. Red1) 5... Rd3 6. Qa2 Rad8 7. c5 Rb3
+8. Red1 Rxd1+ 9. Rxd1 Rxe3) 5. Kg1 Qc6 6. c4 Rd3 7. Qa2 Rb3 8. Red1 Rxd1+ 9.
+Rxd1 Rxe3 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "TAE - Tactics are Everywhere"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[PlyCount "0"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2024.05.15"]
+
+{https://chessmood.com/course/chess-planning-7q-method/episode/6655}  *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 1"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "3r2k1/pn2qpp1/1p2p2p/3pPb2/PP1P4/Q4N1P/3B1PP1/2R3K1 b - - 0 2"]
+[PlyCount "1"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.09.15"]
+
+2... Na5 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 2"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r3r3/pp1q1pk1/3np1pp/3p4/1P6/P3P3/2P1NPPP/R2RQ1K1 w - - 0 1"]
+[PlyCount "1"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.07.26"]
+
+1. c4 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 3"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r1b1r1k1/pp3pp1/2p3nq/3p3p/3P1P2/P1BBPQ1P/1P4P1/1R1R2K1 b - - 0 1"]
+[PlyCount "5"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.04.27"]
+
+1... Bf5 2. Bxf5 Nh4 3. Qf2 Nxf5 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 4"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "1r6/pq3pkp/2p1b1p1/2Pp4/P2P4/3B4/1P3PP1/2RQ2K1 w - - 0 1"]
+[PlyCount "1"]
+[EventDate "2024.05.15"]
+
+{[#] [#]} 1. b4 $1 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 5"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "4qrk1/2n1rpp1/1pp5/p2pP2p/3P3P/2B4Q/PP2RPP1/5RK1 w - - 0 1"]
+[PlyCount "2"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.07.25"]
+
+{[#]} 1. f4 f5 $1 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Examples Part 1"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[PlyCount "0"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2024.05.15"]
+
+{https://chessmood.com/course/chess-planning-7q-method/episode/6688}  *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 1"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r3b1k1/p5p1/4pn2/2rpN3/2p5/P4PB1/1P1RK1PP/7R w - - 0 1"]
+[PlyCount "7"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.05.03"]
+
+{[#]} 1. Bf2 Rb5 2. Bd4 Z0 3. g4 Z0 4. h4 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 2"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r2qr1k1/p3np1p/3pp1p1/2p5/2P1P3/3B4/PP1Q1PPP/2R1R1K1 w - - 0 1"]
+[PlyCount "15"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.07.15"]
+
+{[#] [#]} 1. Bc2 {[%mdl 2]} (1. h4 Nc6 2. h5 Qf6) (1. b4 Nc6 2. bxc5 (2. b5 Nd4
+) 2... dxc5) (1. Z0 d5 2. cxd5 exd5 3. exd5 Nxd5) (1. Re3 Nc6 2. Rh3 Qf6 3. Qh6
+Qg7 4. Qxg7+ Kxg7 5. Z0 Nd4) 1... Nc6 (1... Rf8 2. Ba4) (1... Z0 2. Ba4 Z0 3.
+Rcd1 Z0 4. Re3 Z0 5. Rd3) 2. Ba4 Qc7 3. Z0 Red8 4. Bxc6 Qxc6 5. Rc3 Z0 6. Rd3
+Z0 7. f3 Z0 8. Rd1 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 3"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r1r3k1/1ppq1pb1/1n2b1pp/p1Q5/8/2N1PN2/PP2BPPP/1R3RK1 b - - 0 1"]
+[PlyCount "13"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.05.03"]
+
+{[#] [#]} 1... Na4 (1... Nd5 2. Rbd1) (1... Bxc3 2. Qxc3 Bxa2 3. Ra1 Be6) 2.
+Nxa4 Qxa4 3. a3 b6 (3... Bf5 4. b3 Qe8 5. Rbd1) 4. Qc1 c5 $19 5. Z0 c4 6. Z0 b5
+7. Z0 b4 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 4"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "1r1r2k1/p1p2pp1/1n1b1q1p/2p1p3/2P1P3/1P2B1P1/2P1QP1P/2NR1RK1 w - - 0 1"]
+[PlyCount "11"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.09.16"]
+
+{[#] [#]} 1. Nd3 (1. f4) 1... Qe7 (1... Nd7 2. Ra1 Rb7 3. Ra5 Qe7 4. Rfa1) 2.
+Ra1 Rb7 3. Ra5 Nd7 4. Rfa1 Ra8 5. f3 (5. R1a4 Z0 6. Qe1 Z0 7. Qc1 Z0 8. Qa3)
+5... Z0 6. Qf2 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 5"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r4rk1/pq1b2p1/1p3pn1/2p1p3/4N3/1P1PBP2/1P1Q2PP/2RR2K1 w - - 0 1"]
+[PlyCount "7"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2022.09.13"]
+
+{[#] [#]} 1. b4 (1. Z0 a5 2. Z0 Rad8 3. Z0 Bb5 4. Z0 Rd7 5. Z0 Rfd8) 1... cxb4
+(1... Ba4 2. Re1) (1... f5 2. Nd6) 2. Qxb4 Be6 3. d4 exd4 4. Rxd4 $11 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 6"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "1rr3k1/2q1b1pp/1n3p2/p3p3/Pp6/4QNP1/2P1PP1P/R2R1BK1 w - - 0 1"]
+[PlyCount "5"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.04.27"]
+
+{[#]} 1. Bh3 Rd8 2. Be6+ Kh8 3. Bb3 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 7"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r4rk1/p3nppp/1p1bp3/8/1PB5/P3B1Pq/1QP2P1P/2R1R1K1 w - - 0 1"]
+[PlyCount "5"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.05.02"]
+
+{[#]} 1. Bf1 Qf5 2. c4 (2. Bg2 Rac8 3. c4) 2... Rac8 3. Bg2 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 8"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "2r1r1k1/ppq2bp1/1np1p2p/3p4/3P4/1QP2B2/PP1N1PPP/4RRK1 w - - 0 1"]
+[PlyCount "3"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.08.22"]
+
+{[#] [#]} 1. Bg4 $1 (1. Z0 e5) (1. Re5 Nd7 {[%csl Re5][%cal Ge6e5]}) (1. Re2 e5
+) 1... Rcd8 (1... Qf4 2. Qd1 Rcd8 3. g3 Qf6 4. f4 {[%csl Re6]} Z0 5. Re3 Z0 6.
+Rfe1 Z0 7. Qe2) 2. f4 $1 (2. Nf3 Nc4 3. Ne5 Nd2) *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 9"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "4nrk1/pr1q1ppp/1pR1p3/3pQ3/3P1B2/1P4P1/P1R1PPKP/8 w - - 0 1"]
+[PlyCount "45"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.09.20"]
+
+{[#]} 1. h4 $1 (1. Rc8 {Would allow} f6 2. Qe3 (2. Qh5 g5 3. Be3 Nd6 (3... Qf7
+$6)) 2... g5) (1. Z0 Nf6 2. Rc7 Rxc7 3. Rxc7) 1... Qe7 (1... Nf6 2. Rc7 (2. h5
+h6 3. Bxh6 gxh6 (3... Ng4 4. Qxg7#) 4. Qxf6)) (1... f6 2. Qxe6+) 2. h5 h6 (2...
+Qd7 3. h6 g6 {[%csl Rg8]}) 3. g4 Qd7 4. f3 {Without hurring anywhere!} ({
+Initially I wanted to push} 4. g5 {But then I noticed a strong move for Black}
+f6 $1 5. gxf6 (5. Qxe6+ Qxe6 6. Rxe6 hxg5) 5... Rxf6) 4... Qe7 5. Rc1 Qd7 6.
+Qe3 Qe7 7. a4 $5 {Before finishing Black with a kingside attack, I improved my
+position on the queenside. Anyway, Black's hands are tied. Where do I hurry?}
+Qd7 (7... b5 {Only weakens Black's position} 8. a5 {[%cal Ga5a6]} Qd7 9. a6 Rb6
+10. Rxb6 axb6 11. Bb8 {[%cal Ga6a7]}) 8. b4 Qe7 9. b5 Qd7 {Now my Rook on c6
+is defended, and Rc1 can join the attack from g1} 10. Kf2 Qe7 11. g5 hxg5 12.
+Bxg5 Qd7 13. h6 g6 14. h7+ $1 {I don't need this pawn. It block's my rook} (14.
+Rh1 Kh7) 14... Kxh7 (14... Kh8 15. Bh6) 15. Rh1+ Kg8 (15... Kg7 16. Bh6+) 16.
+Be7 $3 Qxe7 17. Qh6 f6 18. Qh8+ Kf7 19. Rh7+ Ng7 20. Qxg7+ Ke8 21. Rc8+ {
+Black resigned} Qd8 (21... Kd7 22. Qxe7+) 22. Rxd8+ Kxd8 23. Qxf8# *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 10"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r5r1/p1p2nnk/2p4p/4pq2/4N3/1P4P1/P2BQP1P/R2R2K1 w - - 0 1"]
+[PlyCount "5"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.04.26"]
+
+{[#] [#]} 1. Qg4 $1 (1. Rac1 Ne6 2. Rxc6 Nd4 {[%csl Rc6,Re2]}) 1... Qxg4 2.
+Nf6+ Kg6 3. Nxg4 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Examples Part 2"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[PlyCount "0"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2024.05.15"]
+
+ *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 1"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "2r3k1/5n2/pBp2pqp/3p4/3P2pP/P3P3/1QP3PK/5R2 w - - 0 2"]
+[PlyCount "3"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.07.26"]
+
+{[#] [#]} 2. Bc7 $1 (2. g3 Rb8 (2... Nd6 {[%cal Gd6e4]})) (2. Z0 g3+ (2... Rb8)
+(2... Nd6) 3. Kg1 Qe4) 2... Qe4 (2... Rxc7 3. Qb8+ Kg7 4. Qxc7) (2... g3+ 3.
+Bxg3) (2... Z0 3. Bf4) (2... Z0 3. Bf4) (2... Z0 3. Bf4) 3. Bf4 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 2"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r1q2rk1/pp2nppp/2n1p3/2p5/2P5/P2P4/1P1NBPPP/2QRR1K1 w - - 0 1"]
+[PlyCount "9"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.07.27"]
+
+{[#] [#]} 1. Nb3 (1. b4 cxb4 (1... Nd4 2. bxc5 Qxc5) 2. axb4 Nxb4 3. d4) (1.
+Bf3 Z0 2. Bxc6 Nxc6 3. Z0 Nd4 4. Nf3 Z0 5. Nxd4 Z0 6. Nc6 Qxc6 7. Z0 Qc8 {[#]}
+8. Z0 Rd8 9. Z0 Rd4 10. Z0 Qd7 11. Z0 Rd8) 1... b6 (1... Nd4 2. Nxd4 cxd4 3. b4
+Z0 4. Bf3 Z0 5. c5 Z0 6. Re2 Z0 7. Rc2) 2. d4 cxd4 3. Nxd4 Z0 4. b4 Z0 5. Bf3 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 3"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r2q1rk1/pp1b1pp1/4pn1p/3p4/3P4/3BP3/PP3PPP/R1BQK2R b KQ - 0 1"]
+[PlyCount "5"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.04.26"]
+
+{[#] [#]} 1... Bb5 $1 (1... Qb6 2. Qb3 (2. Qe2) 2... Qxb3 3. axb3) (1... Qa5+
+2. Bd2) 2. Bxb5 (2. Bc2) 2... Qa5+ 3. Bd2 Qxb5 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 4"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r3r1k1/p6p/1ppqb1p1/3p1p2/3P4/2B1PP2/PPR1Q1PP/2R3K1 w - - 0 1"]
+[PlyCount "5"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.08.23"]
+
+{[#] [#]} 1. Be1 (1. e4 fxe4 2. fxe4 dxe4 3. Qxe4 Bd5) (1. Z0 Bd7) 1... Rac8 (
+1... Bd7 2. Bg3 Qe6 3. Be5 Z0 4. h3 Z0 5. g4 Z0 6. Qh2 Z0 7. Qf4 Z0 8. Rg2 Z0
+9. Kh1 Z0 10. Rcg1) 2. Bg3 Qd7 3. Be5 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 5"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "4r3/p2bn1kp/1p1p1qp1/3Prp2/2P2Q2/2N4P/PP4P1/R2R1B1K b - - 0 1"]
+[PlyCount "7"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.07.15"]
+
+{[#] [#]} 1... g5 2. Qf2 f4 (2... Ng6) 3. Z0 h5 4. Z0 g4 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 6"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "4r1k1/1q2bpp1/1p1p3p/pP1Pp3/P3P3/3N2P1/4QP1P/5RK1 w - - 0 1"]
+[PlyCount "7"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.09.19"]
+
+{[#] [#]} 1. Rc1 (1. f4 exf4 2. gxf4 (2. Nxf4 Bf6) 2... Bf6 (2... Rc8 3. Rc1
+Rxc1+ 4. Nxc1 Qc8 5. Nd3 (5. Nb3 Qc3) 5... Qc4)) (1. Z0 Rc8 2. Z0 Rc4 3. Ra1
+Qc8 4. Z0 Bg5) 1... Rc8 (1... f5 2. Rc6 fxe4 3. Qxe4) (1... Z0 2. Rc6 Rc8 3. Z0
+Rxc6 4. dxc6) (1... Z0 2. Rc6 Z0 3. Nb2 Z0 4. Nc4) 2. Rc6 Rc7 (2... Z0 3. Qc2
+Rxc6 (3... Re8) 4. dxc6) (2... Rxc6 3. dxc6 Z0 4. Nb2 Z0 5. Nc4) 3. Nb2 (3. Qc2
+Bd8) 3... Z0 4. Nc4 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 7"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "5rk1/2qr1p1p/6pb/p1p5/P2p4/NQ1P2P1/4PP1P/1R2R1K1 b - - 0 2"]
+[PlyCount "7"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.08.23"]
+
+{[#] [#]} 2... Bd2 (2... Z0 3. e4 dxe3 4. fxe3) (2... Z0 3. Nc4 Z0 4. Qb5) (
+2... Z0 3. Nc4 Z0 4. Qb5 (4. Qb6 Qxb6 5. Rxb6 Z0 6. Reb1)) (2... Re7 3. Nc4
+Rfe8 4. Rb2) (2... Z0 3. Nc4 Z0 4. Qb5 (4. Qb6 Qxb6 5. Rxb6)) 3. Red1 Bb4 4.
+Nc2 (4. Z0 Re8 5. Rb2 Rde7 6. Rc1 Z0 7. Rcc2 Qd7 8. Z0 Qg4 9. Z0 h5 10. Z0 h4
+11. Z0 h3) 4... Re8 5. Nxb4 cxb4 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 8"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "1r3r2/2bb1pk1/1p2p1p1/p1p3Pp/2P4P/3P1N2/PR1BPP2/1R4K1 w - - 0 1"]
+[PlyCount "9"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.04.26"]
+
+{[#] [#]} 1. Bc3+ (1. Z0 e5 2. Z0 Rfe8 3. Z0 Bc6 4. Z0 e4 5. dxe4 Rxe4) 1...
+Kg8 2. Be5 (2. Nd2 Bc6 3. Ne4 Bxe4 4. dxe4) 2... Bxe5 3. Nxe5 Rfd8 4. Rxb6 Rxb6
+5. Rxb6 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 9"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "1qr5/2b1nkpp/2p2p2/p1p1p3/P3P3/2BP3P/1PP1N1PK/3QR3 w - - 0 1"]
+[PlyCount "13"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.09.19"]
+
+{[#]} 1. Qb1 (1. Qa1 $1) (1. Nc1 Z0 (1... Z0 2. Nb3) 2. Nb3) (1. Ng3 Z0 2. Rf1
+Z0 3. Qg4) (1. g4 Z0 2. Ng3 Z0 3. Rf1) 1... Kg8 2. Qa2+ Kh8 3. Qc4 Bb6 4. Nc1
+Qd6 5. Nb3 Ra8 6. Bd2 Z0 7. Be3 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 10"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r4rk1/p1q2p1p/1pbb1p2/8/8/2PB3P/P3NPP1/1R1Q1RK1 b - - 0 1"]
+[PlyCount "17"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.09.20"]
+
+{[#] [#] [#]} 1... Kh8 $1 (1... Z0 2. Nd4 Bd7 (2... Z0 3. Qh5) 3. Qh5) 2. Nd4 (
+2. Z0 Rg8) 2... Rg8 3. Nxc6 Qxc6 4. g3 (4. f3 Qc5+ 5. Kh1 Qg5 6. Qe2 Qg3 7. Kg1
+Qh2+ 8. Kf2 Rxg2+) 4... Bxg3 5. fxg3 Rxg3+ 6. Kf2 (6. Kh2 Qg2#) 6... Rg2+ 7.
+Ke3 (7. Ke1 Qxc3+ 8. Qd2 Qxd2#) 7... Re8+ 8. Kf4 (8. Kd4 Qc5#) 8... Qd6+ 9. Kf5
+(9. Kf3 Qg3#) 9... Qe5# *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Examples Part 3"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[PlyCount "0"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2024.05.15"]
+
+ *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 1"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "1b1r4/5pk1/1r1pq1pp/pp2p3/4P3/P1PN4/1P3PPP/R2QR1K1 w - - 0 1"]
+[PlyCount "11"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.08.23"]
+
+{[#] [#]} 1. Nf4 $1 (1. Qf3 d5) (1. Z0 d5) 1... Qd7 (1... exf4 2. Qd4+) 2. Nd5
+Rb7 3. Re3 Z0 4. Rd3 Z0 5. Qd2 Z0 6. Rd1 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 2"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "4rrk1/pp1q1ppp/2b2n2/b2p4/2pP1P2/P1N1PQ1P/1PB3P1/2BR1RK1 b - - 0 2"]
+[PlyCount "19"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.03.22"]
+
+{[#] [#]} 2... Bxc3 $1 (2... b5 $5 3. Z0 Bc7 4. Z0 a5 5. Z0 b4) (2... Bc7) (
+2... Ne4 3. Nxe4 dxe4 4. Qf2) 3. bxc3 Ba4 (3... Ne4 4. Bxe4 Rxe4) 4. Bxa4 Qxa4
+5. Z0 Re7 6. Z0 Rfe8 7. Z0 b5 8. Z0 a5 9. Z0 b4 10. axb4 axb4 11. cxb4 Qxb4 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 3"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "r1b2rk1/pp3pp1/4p2p/2P5/3p2q1/PB1P4/1P1Q1PPP/R1R3K1 w - - 0 1"]
+[PlyCount "8"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.05.03"]
+
+{[#] [#]} 1. Bd1 (1. c6 bxc6 2. Rxc6 Bb7) (1. Z0 Bd7 2. Z0 Bc6 3. Z0 Kh8 4. Z0
+e5 5. Z0 f5) 1... Qh4 2. Bf3 Z0 3. b4 Z0 4. b5 Z0 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 4"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "1r2q3/p4p1k/2bpp1pp/2p5/2P1P3/3P1PN1/P3Q1PP/R5K1 b - - 0 2"]
+[PlyCount "17"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.08.23"]
+
+{[#]} 2... Qh8 (2... Z0 3. Qc2) 3. Rd1 (3. Qe1 Qd4+) 3... Ba4 (3... Rb2 4. Rd2)
+4. Rd2 (4. Rf1 Rb2) 4... Rb1+ 5. Nf1 (5. Kf2) 5... Qa1 6. g3 Re1 7. Qf2 Qc1 8.
+Re2 (8. Rb2 Rxf1+ 9. Qxf1 Qxb2) (8. Kg2 Rxf1) (8. Z0 Rxf1+ 9. Qxf1 Qxd2) 8...
+Rd1 9. Re3 Rxf1+ 10. Qxf1 Qxe3+ *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 5"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "2r1r1k1/p4pp1/nbp1q2p/2p5/4P3/1P1N3P/P4PP1/B1RQR1K1 w - - 0 1"]
+[PlyCount "17"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.07.27"]
+
+{[#] [#]} 1. Nf4 $1 (1. Bb2 Z0 2. Ba3 Z0 3. Qc2) (1. Z0 Rcd8) 1... Qe7 2. Nh5 (
+2. Qg4 Qg5 3. Qxg5 hxg5) 2... f6 (2... Rcd8 3. Qg4) (2... g6 3. Nf6+) 3. Qg4
+Kh8 (3... Rf8 4. Nxf6+ (4. Bxf6) 4... Rxf6 5. Bxf6 Qxf6 6. Qxc8+) 4. e5 fxe5 5.
+Rxe5 $18 (5. Bxe5 $18 Rg8 6. Bxg7+ Rxg7 7. Qxc8+ Qd8 8. Re8+) 5... Qf7 6. Rxe8+
+Rxe8 7. Bxg7+ Kh7 8. Nf6+ Qxf6 9. Bxf6 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 6"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "2r2bk1/1p3ppp/p1r1pq2/P6Q/4P3/7P/RP3PPB/4R1K1 w - - 0 1"]
+[PlyCount "7"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.09.20"]
+
+{[#]} 1. Be5 $1 Qd8 (1... Qg6 2. Qxg6 hxg6 3. Bc3) 2. Bc3 Z0 3. Raa1 Z0 4. Rad1
+*
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 7"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "4rr1k/1p2qpp1/3p3p/1NbPpb2/8/1P5P/P1BQ1PP1/2R1R1K1 b - - 0 1"]
+[PlyCount "3"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.08.24"]
+
+{[#]} 1... Bd7 (1... Bxc2 2. Rxc2 f5) 2. Bd3 (2. Nc3 f5) 2... f5 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 8"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM Avetik"]
+[SetUp "1"]
+[FEN "2r5/1kpn3r/ppbp1p1p/7R/3P2P1/4PP2/PP1N3B/1K3R2 b - - 0 1"]
+[PlyCount "13"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.09.16"]
+
+{[#]} 1... Bb5 (1... Nf8 2. Bf4) (1... Rch8 2. Bf4 Nf8 3. Rfh1) 2. Rh1 Bd3+ 3.
+Kc1 Bg6 4. Rh4 h5 (4... Rch8) 5. gxh5 Rxh5 6. Rxh5 Bxh5 7. Bxd6 cxd6+ *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 9"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "1r2r3/4qpkp/p3bbp1/1p6/4p3/1P2P3/P2B1PPP/1NR1QRK1 b - - 0 1"]
+[PlyCount "5"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.08.24"]
+
+{[#] [#]} 1... b4 $1 (1... Z0 2. Bc3) (1... Kg8 2. Bc3 Bg5 3. Ba1) 2. Z0 a5 (
+2... h5) 3. Z0 (3. Z0 a4) (3. Z0 Rb5 4. Z0) 3... a4 *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Example 10"]
+[Black "?"]
+[Result "*"]
+[Annotator "GM_Avetik"]
+[SetUp "1"]
+[FEN "3r1k2/pq3pbp/1p2b1p1/3p4/Q4B2/P2RP2P/1P2NPP1/6K1 w - - 0 1"]
+[PlyCount "13"]
+[EventDate "2024.05.15"]
+[SourceVersionDate "2023.04.27"]
+
+{[#] [#]} 1. Bh6 $1 (1. Bg5 f6 2. Qf4 (2. Bf4 Rc8) (2. Nd4 Bf7) 2... Bf5) (1.
+Z0 Bxb2 2. Qb4+) (1. Kh2 Bxb2 2. Qb4+) 1... Bxh6 2. Qh4 Rc8 (2... Kg7 3. Qxd8)
+3. Qxh6+ Kg8 4. Nc3 Z0 5. Rd4 Z0 6. Qf4 Z0 7. Qe5 *
+
