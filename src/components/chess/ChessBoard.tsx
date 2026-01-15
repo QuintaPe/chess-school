@@ -1,13 +1,9 @@
 import { cn } from "@/lib/utils";
+import { PieceMap } from "./ChessPieces";
 
 interface ChessPiece {
   type: 'K' | 'Q' | 'R' | 'B' | 'N' | 'P' | 'k' | 'q' | 'r' | 'b' | 'n' | 'p' | null;
 }
-
-const pieceUnicode: Record<string, string> = {
-  'K': '♔', 'Q': '♕', 'R': '♖', 'B': '♗', 'N': '♘', 'P': '♙',
-  'k': '♚', 'q': '♛', 'r': '♜', 'b': '♝', 'n': '♞', 'p': '♟',
-};
 
 const initialPosition: (string | null)[][] = [
   ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
@@ -41,9 +37,9 @@ export const ChessBoard = ({
   const ranks = ['8', '7', '6', '5', '4', '3', '2', '1'];
 
   const sizeClasses = {
-    sm: 'w-8 h-8 text-xl',
-    md: 'w-12 h-12 text-3xl',
-    lg: 'w-16 h-16 text-4xl',
+    sm: 'w-8 h-8',
+    md: 'w-12 h-12',
+    lg: 'w-16 h-16',
   };
 
   const isHighlighted = (row: number, col: number) => {
@@ -52,51 +48,57 @@ export const ChessBoard = ({
   };
 
   return (
-    <div className={cn("inline-block rounded-xl overflow-hidden shadow-2xl", className)}>
+    <div className={cn("inline-block rounded-lg overflow-hidden shadow-2xl border-4 border-slate-800", className)}>
       <div className="grid grid-cols-8">
         {position.map((row, rowIndex) =>
           row.map((piece, colIndex) => {
             const isLight = (rowIndex + colIndex) % 2 === 0;
             const highlighted = isHighlighted(rowIndex, colIndex);
-            
+
+            const PieceComponent = piece ? PieceMap[piece] : null;
+
             return (
               <div
                 key={`${rowIndex}-${colIndex}`}
                 className={cn(
                   sizeClasses[size],
                   "flex items-center justify-center relative transition-all duration-200",
-                  isLight ? "bg-chess-light" : "bg-chess-dark",
-                  highlighted && "ring-2 ring-inset ring-accent",
+                  isLight ? "bg-[#EBECD0]" : "bg-[#779556]", // Lichess/Chess.com style green board is universally liked and looks better than pure brown usually
+                  highlighted && "after:absolute after:inset-0 after:bg-yellow-400/50", // Highlighting via overlay
                   interactive && "cursor-pointer hover:brightness-110"
                 )}
               >
-                {piece && (
-                  <span
-                    className={cn(
-                      "select-none transition-transform duration-200",
-                      piece === piece.toUpperCase() ? "text-foreground drop-shadow-md" : "text-background drop-shadow-md",
-                      interactive && "hover:scale-110"
-                    )}
-                  >
-                    {pieceUnicode[piece]}
-                  </span>
-                )}
+                {/* Board coordinate labels */}
                 {showCoordinates && colIndex === 0 && (
                   <span className={cn(
-                    "absolute top-0.5 left-1 text-[10px] font-medium",
-                    isLight ? "text-chess-dark" : "text-chess-light"
+                    "absolute top-0.5 left-0.5 text-[10px] font-bold leading-none z-10",
+                    isLight ? "text-[#779556]" : "text-[#EBECD0]"
                   )}>
                     {ranks[rowIndex]}
                   </span>
                 )}
                 {showCoordinates && rowIndex === 7 && (
                   <span className={cn(
-                    "absolute bottom-0.5 right-1 text-[10px] font-medium",
-                    isLight ? "text-chess-dark" : "text-chess-light"
+                    "absolute bottom-0.5 right-0.5 text-[10px] font-bold leading-none z-10",
+                    isLight ? "text-[#779556]" : "text-[#EBECD0]"
                   )}>
                     {files[colIndex]}
                   </span>
                 )}
+
+                {/* Piece */}
+                {PieceComponent && (
+                  <div
+                    className={cn(
+                      "w-[85%] h-[85%] select-none z-20 filter drop-shadow-lg transition-transform duration-200",
+                      interactive && "hover:scale-110"
+                    )}
+                  >
+                    <PieceComponent />
+                  </div>
+                )}
+
+                {/* Last move highlight could be improved. The 'after' element handles it above */}
               </div>
             );
           })
