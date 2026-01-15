@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import {
   Crown,
@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/AuthContext";
 
 interface SidebarLinkProps {
   to: string;
@@ -50,6 +51,13 @@ interface DashboardLayoutProps {
 
 export const DashboardLayout = ({ children, role = "student" }: DashboardLayoutProps) => {
   const [collapsed, setCollapsed] = useState(false);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   const studentLinks = [
     { to: "/dashboard", icon: <LayoutDashboard className="w-5 h-5" />, label: "Inicio" },
@@ -82,12 +90,14 @@ export const DashboardLayout = ({ children, role = "student" }: DashboardLayoutP
         {/* Logo */}
         <div className="p-4 border-b border-sidebar-border">
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-[hsl(35_90%_45%)] flex items-center justify-center shadow-lg shadow-primary/25 shrink-0">
-              <Crown className="w-5 h-5 text-primary-foreground" />
-            </div>
+            <img
+              src="/logo.png"
+              alt="Club Reino Ajedrez"
+              className="w-10 h-10 rounded-xl object-cover shadow-lg shadow-primary/25 shrink-0"
+            />
             {!collapsed && (
               <span className="text-lg font-serif font-bold text-sidebar-foreground">
-                ChessMaster
+                Club Reino Ajedrez
               </span>
             )}
           </Link>
@@ -109,6 +119,7 @@ export const DashboardLayout = ({ children, role = "student" }: DashboardLayoutP
             collapsed={collapsed}
           />
           <button
+            onClick={handleLogout}
             className="flex items-center gap-3 px-3 py-2.5 rounded-lg w-full text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-200"
           >
             <LogOut className="w-5 h-5 shrink-0" />

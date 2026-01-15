@@ -15,6 +15,20 @@ import AdminDashboard from "./pages/dashboard/AdminDashboard";
 import PGNPage from "./pages/PGNPage";
 import NotFound from "./pages/NotFound";
 
+// Student Dashboard Pages
+import StudentClasses from "./pages/dashboard/student/StudentClasses";
+import StudentPuzzles from "./pages/dashboard/student/StudentPuzzles";
+import StudentCourses from "./pages/dashboard/student/StudentCourses";
+import StudentProgress from "./pages/dashboard/student/StudentProgress";
+import StudentSettings from "./pages/dashboard/student/StudentSettings";
+
+// Admin Dashboard Pages
+import AdminStudents from "./pages/dashboard/admin/AdminStudents";
+import AdminClasses from "./pages/dashboard/admin/AdminClasses";
+import AdminPuzzles from "./pages/dashboard/admin/AdminPuzzles";
+import AdminContent from "./pages/dashboard/admin/AdminContent";
+import AdminStats from "./pages/dashboard/admin/AdminStats";
+
 const queryClient = new QueryClient();
 
 import { AuthProvider } from "./context/AuthContext";
@@ -47,11 +61,21 @@ const App = () => (
             {/* Protected Routes */}
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<StudentDashboard />} />
+              <Route path="/dashboard/clases" element={<StudentClasses />} />
+              <Route path="/dashboard/problemas" element={<StudentPuzzles />} />
+              <Route path="/dashboard/cursos" element={<StudentCourses />} />
+              <Route path="/dashboard/progreso" element={<StudentProgress />} />
+              <Route path="/dashboard/configuracion" element={<StudentSettings />} />
             </Route>
 
             {/* Admin Routes */}
             <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
               <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/alumnos" element={<AdminStudents />} />
+              <Route path="/admin/clases" element={<AdminClasses />} />
+              <Route path="/admin/problemas" element={<AdminPuzzles />} />
+              <Route path="/admin/contenido" element={<AdminContent />} />
+              <Route path="/admin/estadisticas" element={<AdminStats />} />
             </Route>
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
