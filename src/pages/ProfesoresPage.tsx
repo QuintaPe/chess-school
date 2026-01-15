@@ -2,10 +2,10 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { 
-  Trophy, 
-  Star, 
-  Users, 
+import {
+  Trophy,
+  Star,
+  Users,
   BookOpen,
   Target,
   GraduationCap,
@@ -16,31 +16,32 @@ import {
 
 const ProfesoresPage = () => {
   const mainTeacher = {
-    name: "Maestro Carlos Fernández",
-    title: "Maestro FIDE • Fundador de ChessMaster",
-    rating: 2350,
-    experience: "15+ años enseñando",
-    students: "500+",
-    image: "♔",
-    bio: `Apasionado del ajedrez desde los 6 años, obtuve el título de Maestro FIDE a los 22. 
-    He dedicado los últimos 15 años a la enseñanza del ajedrez, desarrollando un método único 
-    que combina la teoría clásica con las técnicas modernas de entrenamiento.
+    name: "Maider Quintana",
+    title: "Instructora de Ajedrez • Fundadora de Club Reino Ajedrez",
+    rating: 1800,
+    experience: "5+ años enseñando",
+    students: "200+",
+    image: "/images/maider.png",
+    bio: `Apasionada del ajedrez y dedicada a compartir mi amor por este juego milenario. 
+    He desarrollado un método de enseñanza personalizado que se adapta a cada estudiante, 
+    combinando la teoría fundamental con ejercicios prácticos y análisis de partidas.
     
-    Mi filosofía es simple: el ajedrez debe ser accesible, divertido y efectivo. 
-    Cada alumno tiene su propio ritmo y estilo de aprendizaje, y mi trabajo es 
-    encontrar la mejor manera de ayudarte a alcanzar tus objetivos.`,
+    Mi objetivo es hacer que el ajedrez sea accesible y divertido para todos, 
+    sin importar la edad o el nivel. Creo firmemente que el ajedrez no solo mejora 
+    nuestras habilidades en el tablero, sino también nuestra capacidad de pensar 
+    estratégicamente en la vida diaria.`,
     achievements: [
-      "Campeón Regional 2015, 2018, 2021",
-      "Top 100 Nacional España",
-      "Entrenador certificado FIDE",
-      "Autor del libro 'Táctica Moderna'",
-      "Más de 5000 horas de clase impartidas",
+      "Fundadora del Club Reino Ajedrez",
+      "Instructora certificada de ajedrez",
+      "Más de 2000 horas de clase impartidas",
+      "Especialista en enseñanza online",
+      "Creadora de contenido educativo de ajedrez",
     ],
     specialties: [
-      "Táctica y Cálculo",
-      "Finales",
-      "Preparación de Torneos",
       "Ajedrez para Principiantes",
+      "Táctica Básica e Intermedia",
+      "Desarrollo de Aperturas",
+      "Análisis de Partidas",
     ],
   };
 
@@ -81,11 +82,15 @@ const ProfesoresPage = () => {
           <div className="max-w-6xl mx-auto">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               {/* Image/Avatar */}
-              <div className="flex justify-center lg:justify-start order-2 lg:order-1">
+              <div className="flex justify-center lg:justify-center order-2 lg:order-1">
                 <div className="relative">
                   <div className="absolute -inset-4 bg-gradient-to-br from-primary/20 to-accent/20 rounded-3xl blur-xl" />
-                  <Card className="relative w-80 h-80 md:w-96 md:h-96 bg-gradient-to-br from-card to-secondary flex items-center justify-center border-primary/20 glow-gold">
-                    <span className="text-[12rem] opacity-80">{mainTeacher.image}</span>
+                  <Card className="relative w-80 h-80 md:w-96 md:h-96 bg-gradient-to-br from-card to-secondary flex items-center justify-center border-primary/20 glow-gold overflow-hidden">
+                    <img
+                      src={mainTeacher.image}
+                      alt={mainTeacher.name}
+                      className="w-full h-full object-cover"
+                    />
                   </Card>
                   <div className="absolute -bottom-4 -right-4 bg-primary text-primary-foreground px-4 py-2 rounded-xl font-semibold shadow-lg">
                     ELO {mainTeacher.rating}
@@ -174,7 +179,7 @@ const ProfesoresPage = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   {mainTeacher.specialties.map((specialty, index) => (
-                    <div 
+                    <div
                       key={index}
                       className="p-4 rounded-xl bg-secondary/50 border border-border hover:border-primary/30 transition-colors"
                     >

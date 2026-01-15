@@ -7,9 +7,9 @@ export const HeroSection = () => {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background gradient */}
       <div className="absolute inset-0 gradient-dark" />
-      
+
       {/* Subtle pattern overlay */}
-      <div 
+      <div
         className="absolute inset-0 opacity-5"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
@@ -29,14 +29,14 @@ export const HeroSection = () => {
                 🏆 Escuela Online de Ajedrez
               </span>
             </div>
-            
+
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-serif leading-tight">
-              <span className="text-foreground">Domina el arte del </span>
-              <span className="gradient-gold-text text-shadow">ajedrez</span>
+              <span className="text-foreground">Unete al club </span>
+              <span className="gradient-gold-text text-shadow">Reino Ajedrez</span>
             </h1>
-            
+
             <p className="text-lg text-muted-foreground max-w-lg mx-auto lg:mx-0 leading-relaxed">
-              Aprende con un método profesional, clases en vivo interactivas, 
+              Aprende con un método profesional, clases en vivo interactivas,
               problemas personalizados y seguimiento completo de tu progreso.
             </p>
 
@@ -73,8 +73,8 @@ export const HeroSection = () => {
           <div className="flex justify-center lg:justify-end">
             <div className="relative animate-float">
               <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-accent/20 rounded-2xl blur-xl opacity-50" />
-              <ChessBoard 
-                size="lg" 
+              <ChessBoard
+                size="lg"
                 showCoordinates={true}
                 className="relative z-10 glow-gold"
               />
