@@ -2,18 +2,21 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChessBoard } from "@/components/chess/ChessBoard";
-import { 
-  Target, 
-  BookOpen, 
-  Clock, 
-  TrendingUp, 
+import {
+  Target,
+  BookOpen,
+  Clock,
+  TrendingUp,
   Play,
   Calendar,
   Trophy,
   Flame
 } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 const StudentDashboard = () => {
+  const { user } = useAuth();
+
   return (
     <DashboardLayout role="student">
       <div className="p-6 lg:p-8 space-y-8">
@@ -21,7 +24,7 @@ const StudentDashboard = () => {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-serif font-bold text-foreground">
-              ¡Hola, Estudiante! 👋
+              ¡Hola, {user?.name || 'Estudiante'}! 👋
             </h1>
             <p className="text-muted-foreground mt-1">
               Continúa tu entrenamiento de hoy
@@ -100,10 +103,10 @@ const StudentDashboard = () => {
                 <span className="font-medium">+25 puntos</span>
               </div>
             </div>
-            
+
             <div className="flex flex-col lg:flex-row items-center gap-6">
-              <ChessBoard 
-                size="md" 
+              <ChessBoard
+                size="md"
                 interactive={true}
                 className="shrink-0"
               />
@@ -111,7 +114,7 @@ const StudentDashboard = () => {
                 <div className="p-4 rounded-xl bg-secondary/50 border border-border">
                   <p className="text-foreground font-medium mb-2">Objetivo:</p>
                   <p className="text-muted-foreground">
-                    Las blancas juegan y dan mate en 2 movimientos. 
+                    Las blancas juegan y dan mate en 2 movimientos.
                     Encuentra la secuencia ganadora.
                   </p>
                 </div>
