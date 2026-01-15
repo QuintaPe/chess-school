@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
-import { Crown, Mail, Lock, User, ArrowLeft, Loader2 } from "lucide-react";
+import { Crown, Mail, Lock, User, ArrowLeft, Loader2, Shield } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 
@@ -166,6 +166,80 @@ const AuthPage = () => {
               </button>
             </p>
           </div>
+
+          {/* Demo Login Section */}
+          {isLogin && (
+            <div className="space-y-3">
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t border-border" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-background px-2 text-muted-foreground">
+                    Modo Demo (Sin Backend)
+                  </span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    // Simulate student login
+                    const mockStudentData = {
+                      token: "demo-student-token",
+                      user: {
+                        id: 1,
+                        email: "estudiante@demo.com",
+                        name: "Estudiante Demo",
+                        role: "student" as const,
+                        subscription_plan: "free" as const
+                      }
+                    };
+                    localStorage.setItem("token", mockStudentData.token);
+                    localStorage.setItem("user", JSON.stringify(mockStudentData.user));
+                    toast.success("¡Sesión de estudiante iniciada!");
+                    // Force page reload to trigger AuthContext
+                    window.location.href = "/dashboard";
+                  }}
+                  disabled={loading}
+                  className="h-12"
+                >
+                  <User className="w-4 h-4 mr-2" />
+                  Estudiante
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    // Simulate admin login
+                    const mockAdminData = {
+                      token: "demo-admin-token",
+                      user: {
+                        id: 2,
+                        email: "admin@demo.com",
+                        name: "Admin Demo",
+                        role: "admin" as const,
+                        subscription_plan: "premium" as const
+                      }
+                    };
+                    localStorage.setItem("token", mockAdminData.token);
+                    localStorage.setItem("user", JSON.stringify(mockAdminData.user));
+                    toast.success("¡Sesión de admin iniciada!");
+                    // Force page reload to trigger AuthContext
+                    window.location.href = "/admin";
+                  }}
+                  disabled={loading}
+                  className="h-12"
+                >
+                  <Shield className="w-4 h-4 mr-2" />
+                  Admin
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
