@@ -12,9 +12,11 @@ export const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-[hsl(35_90%_45%)] flex items-center justify-center shadow-lg shadow-primary/25 group-hover:shadow-primary/40 transition-shadow">
-              <Crown className="w-5 h-5 text-primary-foreground" />
-            </div>
+            <img
+              src="/logo.png"
+              alt="Club Reino Ajedrez"
+              className="w-10 h-10 rounded-xl object-cover shadow-lg shadow-primary/25 group-hover:shadow-primary/40 transition-shadow"
+            />
             <span className="text-xl font-serif font-bold text-foreground hidden sm:block">
               Club Reino Ajedrez
             </span>
