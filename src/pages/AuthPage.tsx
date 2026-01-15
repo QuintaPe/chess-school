@@ -2,20 +2,49 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link, useSearchParams } from "react-router-dom";
-import { Crown, Mail, Lock, User, ArrowLeft } from "lucide-react";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
+import { Crown, Mail, Lock, User, ArrowLeft, Loader2 } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { toast } from "sonner";
 
 const AuthPage = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const { login, register } = useAuth();
+
   const [isLogin, setIsLogin] = useState(searchParams.get("mode") !== "register");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement authentication
-    console.log({ email, password, name, isLogin });
+    setLoading(true);
+
+    try {
+      if (isLogin) {
+        await login({ email, password });
+        toast.success("¡Bienvenido de nuevo!");
+        navigate("/dashboard");
+      } else {
+        await register({
+          email,
+          password,
+          name,
+          role: 'student', // Default role
+          subscription_plan: 'free' // Default plan
+        });
+        toast.success("¡Cuenta creada exitosamente!");
+        navigate("/dashboard");
+      }
+    } catch (error: any) {
+      console.error(error);
+      const message = error.message || "Ocurrió un error inesperado";
+      toast.error(message.includes("Failed to fetch") ? "Error de conexión con el servidor" : message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -31,11 +60,13 @@ const AuthPage = () => {
 
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-[hsl(35_90%_45%)] flex items-center justify-center shadow-lg shadow-primary/25">
-              <Crown className="w-6 h-6 text-primary-foreground" />
-            </div>
+            <img
+              src="/logo.png"
+              alt="Club Reino Ajedrez"
+              className="w-12 h-12 rounded-xl object-cover shadow-lg shadow-primary/25"
+            />
             <span className="text-2xl font-serif font-bold text-foreground">
-              ChessMaster
+              Club Reino Ajedrez
             </span>
           </div>
 
@@ -45,8 +76,8 @@ const AuthPage = () => {
               {isLogin ? "Bienvenido de nuevo" : "Crea tu cuenta"}
             </h1>
             <p className="text-muted-foreground mt-2">
-              {isLogin 
-                ? "Inicia sesión para continuar con tu aprendizaje" 
+              {isLogin
+                ? "Inicia sesión para continuar con tu aprendizaje"
                 : "Comienza tu viaje hacia la maestría del ajedrez"}
             </p>
           </div>
@@ -65,6 +96,7 @@ const AuthPage = () => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     className="pl-10 h-12 bg-secondary border-border"
+                    required
                   />
                 </div>
               </div>
@@ -81,6 +113,7 @@ const AuthPage = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="pl-10 h-12 bg-secondary border-border"
+                  required
                 />
               </div>
             </div>
@@ -96,6 +129,7 @@ const AuthPage = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="pl-10 h-12 bg-secondary border-border"
+                  required
                 />
               </div>
             </div>
@@ -108,8 +142,15 @@ const AuthPage = () => {
               </div>
             )}
 
-            <Button type="submit" variant="hero" size="lg" className="w-full">
-              {isLogin ? "Iniciar Sesión" : "Crear Cuenta"}
+            <Button type="submit" variant="hero" size="lg" className="w-full" disabled={loading}>
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Procesando...
+                </>
+              ) : (
+                isLogin ? "Iniciar Sesión" : "Crear Cuenta"
+              )}
             </Button>
           </form>
 
@@ -134,7 +175,7 @@ const AuthPage = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5" />
         <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 left-1/4 w-48 h-48 bg-accent/10 rounded-full blur-3xl" />
-        
+
         <div className="relative z-10 text-center p-8 max-w-lg">
           <div className="text-8xl mb-8 animate-float">♔</div>
           <h2 className="text-3xl font-serif font-bold gradient-gold-text mb-4">
