@@ -8,14 +8,30 @@ import {
   Clock,
   TrendingUp,
   Play,
-  Calendar,
   Trophy,
-  Flame
+  Flame,
+  Loader2
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/api";
+import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
 
 const StudentDashboard = () => {
   const { user } = useAuth();
+
+  const { data: dailyPuzzle, isLoading: isLoadingPuzzle } = useQuery({
+    queryKey: ["daily-puzzle"],
+    queryFn: () => api.puzzles.daily(),
+  });
+
+  const { data: classes, isLoading: isLoadingClasses } = useQuery<any[]>({
+    queryKey: ["upcoming-classes"],
+    queryFn: () => api.classes.list(),
+  });
+
+  const upcomingClasses = classes?.filter(c => new Date(c.start_time) > new Date()).slice(0, 3) || [];
 
   return (
     <DashboardLayout role="student">
@@ -30,10 +46,12 @@ const StudentDashboard = () => {
               Continúa tu entrenamiento de hoy
             </p>
           </div>
-          <Button variant="hero">
-            <Play className="w-4 h-4 mr-2" />
-            Clase en Vivo
-          </Button>
+          <Link to="/dashboard/clases">
+            <Button variant="hero">
+              <Play className="w-4 h-4 mr-2" />
+              Ver Clases en Vivo
+            </Button>
+          </Link>
         </div>
 
         {/* Stats cards */}
@@ -44,7 +62,7 @@ const StudentDashboard = () => {
                 <Flame className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-foreground">12</p>
+                <p className="text-2xl font-bold text-foreground">--</p>
                 <p className="text-sm text-muted-foreground">Días de racha</p>
               </div>
             </div>
@@ -56,7 +74,7 @@ const StudentDashboard = () => {
                 <Target className="w-6 h-6 text-accent" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-foreground">156</p>
+                <p className="text-2xl font-bold text-foreground">--</p>
                 <p className="text-sm text-muted-foreground">Problemas resueltos</p>
               </div>
             </div>
@@ -68,7 +86,7 @@ const StudentDashboard = () => {
                 <BookOpen className="w-6 h-6 text-blue-500" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-foreground">8</p>
+                <p className="text-2xl font-bold text-foreground">--</p>
                 <p className="text-sm text-muted-foreground">Lecciones completadas</p>
               </div>
             </div>
@@ -80,7 +98,7 @@ const StudentDashboard = () => {
                 <TrendingUp className="w-6 h-6 text-purple-500" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-foreground">78%</p>
+                <p className="text-2xl font-bold text-foreground">--%</p>
                 <p className="text-sm text-muted-foreground">Precisión media</p>
               </div>
             </div>
@@ -96,102 +114,109 @@ const StudentDashboard = () => {
                 <h2 className="text-xl font-serif font-semibold text-foreground">
                   Problema del Día
                 </h2>
-                <p className="text-sm text-muted-foreground">Mate en 2 - Nivel Intermedio</p>
+                <p className="text-sm text-muted-foreground">
+                  {isLoadingPuzzle ? "Cargando..." : dailyPuzzle ? `Rating: ${dailyPuzzle.rating}` : "No disponible"}
+                </p>
               </div>
-              <div className="flex items-center gap-2 text-primary">
-                <Trophy className="w-5 h-5" />
-                <span className="font-medium">+25 puntos</span>
-              </div>
+              {dailyPuzzle && (
+                <div className="flex items-center gap-2 text-primary">
+                  <Trophy className="w-5 h-5" />
+                  <span className="font-medium">+{dailyPuzzle.rating > 1500 ? 50 : 25} puntos</span>
+                </div>
+              )}
             </div>
 
-            <div className="flex flex-col lg:flex-row items-center gap-6">
-              <ChessBoard
-                size="md"
-                interactive={true}
-                className="shrink-0"
-              />
-              <div className="flex-1 space-y-4">
-                <div className="p-4 rounded-xl bg-secondary/50 border border-border">
-                  <p className="text-foreground font-medium mb-2">Objetivo:</p>
-                  <p className="text-muted-foreground">
-                    Las blancas juegan y dan mate en 2 movimientos.
-                    Encuentra la secuencia ganadora.
-                  </p>
-                </div>
-                <div className="flex gap-3">
-                  <Button variant="hero" className="flex-1">
-                    Resolver
-                  </Button>
-                  <Button variant="outline">
-                    Ver Pista
-                  </Button>
+            {isLoadingPuzzle ? (
+              <div className="flex justify-center py-20">
+                <Loader2 className="w-10 h-10 animate-spin text-primary" />
+              </div>
+            ) : dailyPuzzle ? (
+              <div className="flex flex-col lg:flex-row items-center gap-6">
+                <ChessBoard
+                  fen={dailyPuzzle.fen}
+                  size="md"
+                  interactive={true}
+                  className="shrink-0"
+                />
+                <div className="flex-1 space-y-4">
+                  <div className="p-4 rounded-xl bg-secondary/50 border border-border">
+                    <p className="text-foreground font-medium mb-2">Objetivo:</p>
+                    <p className="text-muted-foreground">
+                      Juegan las {dailyPuzzle.turn === 'w' ? 'Blancas' : 'Negras'}.
+                      Encuentra la mejor continuación para ganar ventaja o dar mate.
+                    </p>
+                  </div>
+                  <div className="flex gap-3">
+                    <Button variant="hero" className="flex-1">
+                      Resolver
+                    </Button>
+                    <Button variant="outline">
+                      Ver Pista
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="flex items-center justify-center h-48 text-muted-foreground">
+                No hay problema diario disponible en este momento.
+              </div>
+            )}
           </Card>
 
           {/* Upcoming classes */}
           <Card className="p-6 bg-card border-border">
-            <h2 className="text-xl font-serif font-semibold text-foreground mb-4">
-              Próximas Clases
-            </h2>
-            <div className="space-y-4">
-              {[
-                { title: "Finales de Torre", time: "Hoy, 18:00", level: "Intermedio" },
-                { title: "Táctica Avanzada", time: "Mañana, 17:00", level: "Avanzado" },
-                { title: "Aperturas Clásicas", time: "Viernes, 18:00", level: "Intermedio" },
-              ].map((clase, index) => (
-                <div
-                  key={index}
-                  className="p-4 rounded-xl bg-secondary/50 border border-border hover:border-primary/30 transition-colors cursor-pointer"
-                >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="font-medium text-foreground">{clase.title}</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <Clock className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-sm text-muted-foreground">{clase.time}</span>
-                      </div>
-                    </div>
-                    <span className="px-2 py-1 rounded-md bg-primary/10 text-primary text-xs font-medium">
-                      {clase.level}
-                    </span>
-                  </div>
-                </div>
-              ))}
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-serif font-semibold text-foreground">
+                Próximas Clases
+              </h2>
+              <Link to="/dashboard/clases" className="text-xs text-primary hover:underline">Ver todas</Link>
             </div>
-            <Button variant="ghost" className="w-full mt-4">
-              Ver todas las clases
-            </Button>
+            <div className="space-y-4">
+              {isLoadingClasses ? (
+                <div className="flex justify-center py-10">
+                  <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                </div>
+              ) : upcomingClasses.length > 0 ? (
+                upcomingClasses.map((clase) => (
+                  <div
+                    key={clase.id}
+                    className="p-4 rounded-xl bg-secondary/50 border border-border hover:border-primary/30 transition-colors cursor-pointer"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="font-medium text-foreground">{clase.title}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Clock className="w-4 h-4 text-muted-foreground" />
+                          <span className="text-sm text-muted-foreground">
+                            {new Date(clase.start_time).toLocaleDateString('es-ES', { month: 'short', day: 'numeric' })}, {new Date(clase.start_time).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                        </div>
+                      </div>
+                      <Badge variant="outline" className="text-[10px] uppercase">
+                        {clase.level}
+                      </Badge>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="text-center py-8 text-muted-foreground italic text-sm">No hay clases próximas.</p>
+              )}
+            </div>
+            <Link to="/dashboard/clases">
+              <Button variant="ghost" className="w-full mt-4">
+                Ver todas las clases
+              </Button>
+            </Link>
           </Card>
         </div>
 
-        {/* Recent activity */}
+        {/* Recent activity placeholder */}
         <Card className="p-6 bg-card border-border">
           <h2 className="text-xl font-serif font-semibold text-foreground mb-4">
             Tu Actividad Reciente
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              { type: "Problema", title: "Mate en 3", result: "Correcto", time: "Hace 2h", icon: Target },
-              { type: "Lección", title: "Finales básicos", result: "Completada", time: "Hace 1 día", icon: BookOpen },
-              { type: "Clase", title: "Táctica media", result: "Asistida", time: "Hace 2 días", icon: Calendar },
-              { type: "Problema", title: "Defensa material", result: "Incorrecto", time: "Hace 3 días", icon: Target },
-            ].map((activity, index) => (
-              <div key={index} className="p-4 rounded-xl bg-secondary/30 border border-border">
-                <div className="flex items-center gap-3 mb-2">
-                  <activity.icon className="w-4 h-4 text-primary" />
-                  <span className="text-xs text-muted-foreground">{activity.type}</span>
-                </div>
-                <p className="font-medium text-foreground mb-1">{activity.title}</p>
-                <div className="flex items-center justify-between">
-                  <span className={`text-xs font-medium ${activity.result === 'Correcto' || activity.result === 'Completada' || activity.result === 'Asistida' ? 'text-accent' : 'text-destructive'}`}>
-                    {activity.result}
-                  </span>
-                  <span className="text-xs text-muted-foreground">{activity.time}</span>
-                </div>
-              </div>
-            ))}
+          <div className="flex items-center justify-center h-24 text-muted-foreground italic">
+            Próximamente: Registraremos tu progreso aquí
           </div>
         </Card>
       </div>

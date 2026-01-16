@@ -2,65 +2,64 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { 
-  Play, 
-  Calendar, 
-  Clock, 
-  Users, 
+import { Badge } from "@/components/ui/badge";
+import {
+  Play,
+  Calendar,
+  Clock,
+  Users,
   Video,
   BookOpen,
-  Star,
-  ArrowRight
+  ArrowRight,
+  Loader2,
+  CheckCircle2
 } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { api } from "@/lib/api";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
+import { toast } from "sonner";
 
 const ClasesPage = () => {
-  const liveClasses = [
-    {
-      id: 1,
-      title: "Finales de Torre Avanzados",
-      description: "Domina los finales más comunes y decisivos del ajedrez",
-      date: "Hoy",
-      time: "18:00",
-      duration: "90 min",
-      level: "Avanzado",
-      students: 8,
-      maxStudents: 12,
-      isLive: true,
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const { data: classes, isLoading } = useQuery<any[]>({
+    queryKey: ["public-classes"],
+    queryFn: () => api.classes.list(),
+  });
+
+  const registerMutation = useMutation({
+    mutationFn: (id: number) => api.classes.register(id),
+    onSuccess: () => {
+      toast.success("¡Clase reservada con éxito! Redirigiendo a tu panel...");
+      queryClient.invalidateQueries({ queryKey: ["public-classes"] });
+      setTimeout(() => navigate("/dashboard/clases"), 1500);
     },
-    {
-      id: 2,
-      title: "Táctica: Clavadas y Descubiertas",
-      description: "Aprende a identificar y ejecutar estas poderosas tácticas",
-      date: "Mañana",
-      time: "17:00",
-      duration: "60 min",
-      level: "Intermedio",
-      students: 10,
-      maxStudents: 15,
-    },
-    {
-      id: 3,
-      title: "Introducción a la Defensa Siciliana",
-      description: "Los conceptos fundamentales de la apertura más popular",
-      date: "Viernes",
-      time: "18:00",
-      duration: "75 min",
-      level: "Intermedio",
-      students: 12,
-      maxStudents: 15,
-    },
-    {
-      id: 4,
-      title: "Estrategia: Control del Centro",
-      description: "Por qué el centro es tan importante y cómo dominarlo",
-      date: "Sábado",
-      time: "11:00",
-      duration: "60 min",
-      level: "Principiante",
-      students: 5,
-      maxStudents: 20,
-    },
-  ];
+    onError: (error: Error) => {
+      toast.error(`Error: ${error.message}`);
+    }
+  });
+
+  const handleRegister = (id: number) => {
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+    registerMutation.mutate(id);
+  };
+
+  const translateLevel = (level: string) => {
+    switch (level) {
+      case "beginner": return "Principiante";
+      case "intermediate": return "Intermedio";
+      case "advanced": return "Avanzado";
+      default: return level;
+    }
+  };
+
+  const liveClasses = classes?.filter(c => new Date(c.start_time) > new Date()).slice(0, 4) || [];
 
   const recordedClasses = [
     {
@@ -114,7 +113,7 @@ const ClasesPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       <main className="pt-24 pb-16">
         {/* Hero */}
@@ -125,7 +124,7 @@ const ClasesPage = () => {
                 Clases de <span className="gradient-gold-text">Ajedrez</span>
               </h1>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Aprende en vivo con clases interactivas o accede a nuestro catálogo 
+                Aprende en vivo con clases interactivas o accede a nuestro catálogo
                 de lecciones grabadas cuando quieras.
               </p>
             </div>
@@ -150,74 +149,78 @@ const ClasesPage = () => {
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {liveClasses.map((clase) => (
-                <Card 
-                  key={clase.id} 
-                  className={`p-6 bg-card border-border hover:border-primary/30 transition-all duration-300 ${
-                    clase.isLive ? 'ring-2 ring-accent ring-offset-2 ring-offset-background' : ''
-                  }`}
-                >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      {clase.isLive ? (
-                        <div className="w-12 h-12 rounded-xl bg-accent/20 flex items-center justify-center">
-                          <Play className="w-5 h-5 text-accent" />
-                        </div>
-                      ) : (
+            {isLoading ? (
+              <div className="flex justify-center py-20">
+                <Loader2 className="w-10 h-10 animate-spin text-primary" />
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {liveClasses.length > 0 ? liveClasses.map((clase) => (
+                  <Card
+                    key={clase.id}
+                    className="p-6 bg-card border-border hover:border-primary/30 transition-all duration-300"
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
                           <Video className="w-5 h-5 text-primary" />
                         </div>
-                      )}
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                            clase.isLive 
-                              ? 'bg-accent/20 text-accent animate-pulse' 
-                              : 'bg-primary/10 text-primary'
-                          }`}>
-                            {clase.isLive ? '● En Vivo' : clase.date}
-                          </span>
-                          <span className="text-xs text-muted-foreground">
-                            {clase.time}
-                          </span>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-full text-xs font-medium lowercase">
+                              {new Date(clase.start_time).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric' })}
+                            </span>
+                            <span className="text-xs text-muted-foreground font-mono">
+                              {new Date(clase.start_time).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+                            </span>
+                          </div>
                         </div>
                       </div>
+                      <Badge variant="outline" className="text-xs uppercase">
+                        {translateLevel(clase.level)}
+                      </Badge>
                     </div>
-                    <span className={`px-2 py-1 rounded-md text-xs font-medium ${
-                      clase.level === 'Principiante' ? 'bg-green-500/10 text-green-500' :
-                      clase.level === 'Intermedio' ? 'bg-yellow-500/10 text-yellow-500' :
-                      'bg-red-500/10 text-red-500'
-                    }`}>
-                      {clase.level}
-                    </span>
-                  </div>
 
-                  <h3 className="text-lg font-semibold text-foreground mb-2">
-                    {clase.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    {clase.description}
-                  </p>
+                    <h3 className="text-lg font-semibold text-foreground mb-2">
+                      {clase.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                      {clase.description || "Sin descripción disponible."}
+                    </p>
 
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-1">
-                        <Clock className="w-4 h-4" />
-                        {clase.duration}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-1">
+                          <Clock className="w-4 h-4" />
+                          60 min
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Users className="w-4 h-4" />
+                          {clase.capacity || 20} máx
+                        </div>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <Users className="w-4 h-4" />
-                        {clase.students}/{clase.maxStudents}
-                      </div>
+                      <Button
+                        variant="hero"
+                        size="sm"
+                        onClick={() => handleRegister(clase.id)}
+                        disabled={registerMutation.isPending && registerMutation.variables === clase.id}
+                      >
+                        {registerMutation.isPending && registerMutation.variables === clase.id ? (
+                          <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                        ) : clase.isRegistered ? (
+                          <CheckCircle2 className="w-4 h-4 mr-2" />
+                        ) : null}
+                        {clase.isRegistered ? "Reservada" : "Reservar"}
+                      </Button>
                     </div>
-                    <Button variant={clase.isLive ? "success" : "hero"} size="sm">
-                      {clase.isLive ? 'Unirse Ahora' : 'Reservar'}
-                    </Button>
+                  </Card>
+                )) : (
+                  <div className="col-span-full py-10 text-center text-muted-foreground bg-secondary/10 rounded-xl border border-dashed border-border">
+                    No hay clases programadas por ahora.
                   </div>
-                </Card>
-              ))}
-            </div>
+                )}
+              </div>
+            )}
           </div>
         </section>
 
@@ -241,27 +244,23 @@ const ClasesPage = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {recordedClasses.map((clase) => (
-                <Card 
+                <Card
                   key={clase.id}
                   className="overflow-hidden bg-card border-border hover:border-primary/30 transition-all duration-300 cursor-pointer group"
                 >
                   <div className="aspect-video bg-secondary flex items-center justify-center relative">
-                    <span className="text-6xl opacity-50">{clase.thumbnail}</span>
+                    <span className="text-6xl opacity-20">{clase.thumbnail}</span>
                     <div className="absolute inset-0 bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-primary/30">
+                      <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-primary/30 scale-90 group-hover:scale-100 transition-transform">
                         <Play className="w-8 h-8 text-primary-foreground ml-1" />
                       </div>
                     </div>
                   </div>
                   <div className="p-4">
                     <div className="flex items-center justify-between mb-2">
-                      <span className={`px-2 py-0.5 rounded-md text-xs font-medium ${
-                        clase.level === 'Principiante' ? 'bg-green-500/10 text-green-500' :
-                        clase.level === 'Intermedio' ? 'bg-yellow-500/10 text-yellow-500' :
-                        'bg-red-500/10 text-red-500'
-                      }`}>
+                      <Badge variant="outline" className="text-[10px] uppercase">
                         {clase.level}
-                      </span>
+                      </Badge>
                       <span className="text-xs text-muted-foreground">
                         {clase.duration}
                       </span>

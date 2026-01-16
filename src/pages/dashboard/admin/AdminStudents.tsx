@@ -12,6 +12,7 @@ import {
     Shield,
     Filter,
     ArrowUpDown,
+    Loader2
 } from "lucide-react";
 import {
     Table,
@@ -29,92 +30,54 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/api";
 
 const AdminStudents = () => {
-    const students = [
-        {
-            id: 1,
-            name: "Juan Pérez",
-            email: "juan.perez@example.com",
-            role: "student",
-            plan: "Premium",
-            joinedDate: "2025-10-15",
-            status: "active",
-            lastLogin: "2h atrás",
-        },
-        {
-            id: 2,
-            name: "María García",
-            email: "maria.garcia@example.com",
-            role: "student",
-            plan: "Free",
-            joinedDate: "2025-11-20",
-            status: "active",
-            lastLogin: "1d atrás",
-        },
-        {
-            id: 3,
-            name: "Carlos Rodríguez",
-            email: "carlos.r@example.com",
-            role: "student",
-            plan: "Premium",
-            joinedDate: "2025-12-05",
-            status: "inactive",
-            lastLogin: "1 semana atrás",
-        },
-        {
-            id: 4,
-            name: "Ana Martínez",
-            email: "ana.mtz@example.com",
-            role: "student",
-            plan: "Free",
-            joinedDate: "2026-01-10",
-            status: "active",
-            lastLogin: "Recién",
-        },
-        {
-            id: 5,
-            name: "Luis Sánchez",
-            email: "luis.s@example.com",
-            role: "student",
-            plan: "Premium",
-            joinedDate: "2025-09-28",
-            status: "active",
-            lastLogin: "5h atrás",
-        },
-    ];
+    const { data: students, isLoading, isError } = useQuery<any[]>({
+        queryKey: ["admin-students"],
+        queryFn: () => api.users.list("student"),
+    });
 
     const getPlanBadge = (plan: string) => {
+        if (!plan) return <Badge variant="outline" className="text-muted-foreground">Free</Badge>;
         switch (plan.toLowerCase()) {
             case "premium":
                 return <Badge className="bg-primary/10 text-primary border-primary/20">Premium</Badge>;
             case "free":
                 return <Badge variant="outline" className="text-muted-foreground">Free</Badge>;
             default:
-                return null;
+                return <Badge variant="outline">{plan}</Badge>;
         }
     };
 
     const getStatusBadge = (status: string) => {
-        switch (status.toLowerCase()) {
-            case "active":
-                return (
-                    <div className="flex items-center gap-1.5 text-green-500">
-                        <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                        <span className="text-xs font-medium">Activo</span>
-                    </div>
-                );
-            case "inactive":
-                return (
-                    <div className="flex items-center gap-1.5 text-muted-foreground">
-                        <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground" />
-                        <span className="text-xs font-medium">Inactivo</span>
-                    </div>
-                );
-            default:
-                return null;
+        const isActive = status === "active" || status === "confirmed";
+        if (isActive) {
+            return (
+                <div className="flex items-center gap-1.5 text-green-500">
+                    <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                    <span className="text-xs font-medium">Activo</span>
+                </div>
+            );
         }
+        return (
+            <div className="flex items-center gap-1.5 text-muted-foreground">
+                <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground" />
+                <span className="text-xs font-medium">Inactivo</span>
+            </div>
+        );
     };
+
+    if (isLoading) {
+        return (
+            <DashboardLayout role="admin">
+                <div className="flex items-center justify-center min-h-[400px]">
+                    <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                </div>
+            </DashboardLayout>
+        );
+    }
 
     return (
         <DashboardLayout role="admin">
@@ -167,17 +130,16 @@ const AdminStudents = () => {
                                 <TableHead className="font-semibold text-foreground">Estado</TableHead>
                                 <TableHead className="font-semibold text-foreground">Plan</TableHead>
                                 <TableHead className="font-semibold text-foreground">Fecha registro</TableHead>
-                                <TableHead className="font-semibold text-foreground">Última sesión</TableHead>
                                 <TableHead className="text-right"></TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {students.map((student) => (
+                            {students?.map((student) => (
                                 <TableRow key={student.id} className="border-border hover:bg-secondary/30 transition-colors">
                                     <TableCell>
                                         <div className="flex items-center gap-3">
                                             <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium text-sm">
-                                                {student.name.charAt(0)}
+                                                {student.name?.charAt(0) || "U"}
                                             </div>
                                             <div>
                                                 <p className="font-medium text-foreground">{student.name}</p>
@@ -189,14 +151,13 @@ const AdminStudents = () => {
                                         </div>
                                     </TableCell>
                                     <TableCell>{getStatusBadge(student.status)}</TableCell>
-                                    <TableCell>{getPlanBadge(student.plan)}</TableCell>
+                                    <TableCell>{getPlanBadge(student.subscription_plan)}</TableCell>
                                     <TableCell>
                                         <div className="flex items-center gap-1.5 text-sm text-foreground">
                                             <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
-                                            {new Date(student.joinedDate).toLocaleDateString('es-ES')}
+                                            {student.created_at ? new Date(student.created_at).toLocaleDateString('es-ES') : 'N/A'}
                                         </div>
                                     </TableCell>
-                                    <TableCell className="text-sm text-muted-foreground">{student.lastLogin}</TableCell>
                                     <TableCell className="text-right">
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
@@ -218,6 +179,13 @@ const AdminStudents = () => {
                                     </TableCell>
                                 </TableRow>
                             ))}
+                            {(!students || students.length === 0) && (
+                                <TableRow>
+                                    <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                                        No se encontraron alumnos.
+                                    </TableCell>
+                                </TableRow>
+                            )}
                         </TableBody>
                     </Table>
                 </Card>
@@ -225,12 +193,8 @@ const AdminStudents = () => {
                 {/* Pagination Placeholder */}
                 <div className="flex items-center justify-between px-2">
                     <p className="text-sm text-muted-foreground">
-                        Mostrando 5 de 128 alumnos
+                        Mostrando {students?.length || 0} alumnos
                     </p>
-                    <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm" disabled>Anterior</Button>
-                        <Button variant="outline" size="sm">Siguiente</Button>
-                    </div>
                 </div>
             </div>
         </DashboardLayout>

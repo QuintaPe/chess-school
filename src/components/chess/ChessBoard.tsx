@@ -18,6 +18,7 @@ const initialPosition: (string | null)[][] = [
 
 interface ChessBoardProps {
   position?: (string | null)[][];
+  fen?: string;
   interactive?: boolean;
   size?: 'sm' | 'md' | 'lg';
   showCoordinates?: boolean;
@@ -25,14 +26,39 @@ interface ChessBoardProps {
   highlightSquares?: string[];
 }
 
+const parseFen = (fen: string): (string | null)[][] => {
+  const [board] = fen.split(' ');
+  const rows = board.split('/');
+  const position: (string | null)[][] = [];
+
+  for (const row of rows) {
+    const boardRow: (string | null)[] = [];
+    for (const char of row) {
+      if (isNaN(parseInt(char))) {
+        boardRow.push(char);
+      } else {
+        const emptyCount = parseInt(char);
+        for (let i = 0; i < emptyCount; i++) {
+          boardRow.push(null);
+        }
+      }
+    }
+    position.push(boardRow);
+  }
+
+  return position;
+};
+
 export const ChessBoard = ({
-  position = initialPosition,
+  position,
+  fen,
   interactive = false,
   size = 'md',
   showCoordinates = true,
   className,
   highlightSquares = [],
 }: ChessBoardProps) => {
+  const boardPosition = fen ? parseFen(fen) : (position || initialPosition);
   const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
   const ranks = ['8', '7', '6', '5', '4', '3', '2', '1'];
 
@@ -50,7 +76,7 @@ export const ChessBoard = ({
   return (
     <div className={cn("inline-block rounded-lg overflow-hidden shadow-2xl border-4 border-slate-800", className)}>
       <div className="grid grid-cols-8">
-        {position.map((row, rowIndex) =>
+        {boardPosition.map((row, rowIndex) =>
           row.map((piece, colIndex) => {
             const isLight = (rowIndex + colIndex) % 2 === 0;
             const highlighted = isHighlighted(rowIndex, colIndex);

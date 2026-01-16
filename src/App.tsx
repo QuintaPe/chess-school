@@ -27,6 +27,7 @@ import AdminStudents from "./pages/dashboard/admin/AdminStudents";
 import AdminClasses from "./pages/dashboard/admin/AdminClasses";
 import AdminPuzzles from "./pages/dashboard/admin/AdminPuzzles";
 import AdminContent from "./pages/dashboard/admin/AdminContent";
+import AdminCourseDetail from "./pages/dashboard/admin/AdminCourseDetail";
 import AdminStats from "./pages/dashboard/admin/AdminStats";
 
 const queryClient = new QueryClient();
@@ -75,6 +76,7 @@ const App = () => (
               <Route path="/admin/clases" element={<AdminClasses />} />
               <Route path="/admin/problemas" element={<AdminPuzzles />} />
               <Route path="/admin/contenido" element={<AdminContent />} />
+              <Route path="/admin/contenido/:id" element={<AdminCourseDetail />} />
               <Route path="/admin/estadisticas" element={<AdminStats />} />
             </Route>
 

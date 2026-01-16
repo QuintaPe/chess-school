@@ -11,101 +11,55 @@ import {
     Play,
     CheckCircle2,
     XCircle,
-    AlertCircle
+    AlertCircle,
+    Loader2
 } from "lucide-react";
 import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { api } from "@/lib/api";
+import { toast } from "sonner";
 
 const StudentClasses = () => {
     const [activeTab, setActiveTab] = useState<"upcoming" | "completed">("upcoming");
+    const queryClient = useQueryClient();
 
-    const upcomingClasses = [
-        {
-            id: 1,
-            title: "Finales de Torre",
-            teacher: "Maider Quintana",
-            date: "2026-01-18",
-            time: "18:00",
-            duration: "60 min",
-            level: "Intermedio",
-            type: "live",
-            enrolled: 12,
-            maxStudents: 20,
-            status: "confirmed"
-        },
-        {
-            id: 2,
-            title: "Táctica Avanzada",
-            teacher: "Maider Quintana",
-            date: "2026-01-20",
-            time: "17:00",
-            duration: "90 min",
-            level: "Avanzado",
-            type: "live",
-            enrolled: 8,
-            maxStudents: 15,
-            status: "confirmed"
-        },
-        {
-            id: 3,
-            title: "Aperturas Clásicas",
-            teacher: "Maider Quintana",
-            date: "2026-01-22",
-            time: "18:00",
-            duration: "60 min",
-            level: "Intermedio",
-            type: "live",
-            enrolled: 15,
-            maxStudents: 20,
-            status: "pending"
-        },
-    ];
+    const { data: classes, isLoading, isError } = useQuery<any[]>({
+        queryKey: ["classes"],
+        queryFn: () => api.classes.list(),
+    });
 
-    const completedClasses = [
-        {
-            id: 4,
-            title: "Introducción a las Aperturas",
-            teacher: "Maider Quintana",
-            date: "2026-01-10",
-            duration: "60 min",
-            level: "Principiante",
-            type: "recorded",
-            rating: 5,
-            attended: true
+    const registerMutation = useMutation({
+        mutationFn: (id: number) => api.classes.register(id),
+        onSuccess: () => {
+            toast.success("¡Inscrito con éxito!");
+            queryClient.invalidateQueries({ queryKey: ["classes"] });
         },
-        {
-            id: 5,
-            title: "Táctica Básica",
-            teacher: "Maider Quintana",
-            date: "2026-01-08",
-            duration: "45 min",
-            level: "Principiante",
-            type: "live",
-            rating: 4,
-            attended: true
-        },
-        {
-            id: 6,
-            title: "Finales Básicos",
-            teacher: "Maider Quintana",
-            date: "2026-01-05",
-            duration: "60 min",
-            level: "Intermedio",
-            type: "live",
-            rating: 5,
-            attended: false
-        },
-    ];
+        onError: (error: Error) => {
+            toast.error(`Error: ${error.message}`);
+        }
+    });
 
-    const getStatusBadge = (status: string) => {
-        switch (status) {
-            case "confirmed":
-                return <Badge className="bg-green-500/10 text-green-500 border-green-500/20"><CheckCircle2 className="w-3 h-3 mr-1" />Confirmada</Badge>;
-            case "pending":
-                return <Badge className="bg-yellow-500/10 text-yellow-500 border-yellow-500/20"><AlertCircle className="w-3 h-3 mr-1" />Pendiente</Badge>;
-            default:
-                return null;
+    const upcomingClasses = classes?.filter(c => new Date(c.start_time) > new Date()) || [];
+    const completedClasses = classes?.filter(c => new Date(c.start_time) <= new Date()) || [];
+
+    const translateLevel = (level: string) => {
+        switch (level) {
+            case "beginner": return "Principiante";
+            case "intermediate": return "Intermedio";
+            case "advanced": return "Avanzado";
+            default: return level;
         }
     };
+
+    if (isLoading) {
+        return (
+            <DashboardLayout role="student">
+                <div className="flex items-center justify-center min-h-[400px]">
+                    <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                </div>
+            </DashboardLayout>
+        );
+    }
 
     return (
         <DashboardLayout role="student">
@@ -152,7 +106,7 @@ const StudentClasses = () => {
                                 <Clock className="w-6 h-6 text-blue-500" />
                             </div>
                             <div>
-                                <p className="text-2xl font-bold text-foreground">12h</p>
+                                <p className="text-2xl font-bold text-foreground">--</p>
                                 <p className="text-sm text-muted-foreground">Horas totales</p>
                             </div>
                         </div>
@@ -164,8 +118,8 @@ const StudentClasses = () => {
                     <button
                         onClick={() => setActiveTab("upcoming")}
                         className={`px-4 py-2 font-medium transition-colors border-b-2 ${activeTab === "upcoming"
-                                ? "border-primary text-primary"
-                                : "border-transparent text-muted-foreground hover:text-foreground"
+                            ? "border-primary text-primary"
+                            : "border-transparent text-muted-foreground hover:text-foreground"
                             }`}
                     >
                         Próximas Clases
@@ -173,8 +127,8 @@ const StudentClasses = () => {
                     <button
                         onClick={() => setActiveTab("completed")}
                         className={`px-4 py-2 font-medium transition-colors border-b-2 ${activeTab === "completed"
-                                ? "border-primary text-primary"
-                                : "border-transparent text-muted-foreground hover:text-foreground"
+                            ? "border-primary text-primary"
+                            : "border-transparent text-muted-foreground hover:text-foreground"
                             }`}
                     >
                         Historial
@@ -195,50 +149,85 @@ const StudentClasses = () => {
                                                 </h3>
                                                 <p className="text-sm text-muted-foreground flex items-center gap-2">
                                                     <Users className="w-4 h-4" />
-                                                    {clase.teacher}
+                                                    Profesor: {clase.teacher_id === 1 ? 'Maider Quintana' : 'Admin'}
                                                 </p>
                                             </div>
-                                            {getStatusBadge(clase.status)}
+                                            <Badge className="bg-green-500/10 text-green-500 border-green-500/20">
+                                                <CheckCircle2 className="w-3 h-3 mr-1" />Confirmada
+                                            </Badge>
                                         </div>
 
                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
                                             <div className="flex items-center gap-2 text-sm">
                                                 <Calendar className="w-4 h-4 text-muted-foreground" />
-                                                <span className="text-foreground">{new Date(clase.date).toLocaleDateString('es-ES')}</span>
+                                                <span className="text-foreground">{new Date(clase.start_time).toLocaleDateString('es-ES')}</span>
                                             </div>
                                             <div className="flex items-center gap-2 text-sm">
                                                 <Clock className="w-4 h-4 text-muted-foreground" />
-                                                <span className="text-foreground">{clase.time}</span>
+                                                <span className="text-foreground">
+                                                    {new Date(clase.start_time).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+                                                </span>
                                             </div>
                                             <div className="flex items-center gap-2 text-sm">
                                                 <Video className="w-4 h-4 text-muted-foreground" />
-                                                <span className="text-foreground">{clase.duration}</span>
+                                                <span className="text-foreground">60 min</span>
                                             </div>
                                             <div>
-                                                <Badge variant="outline" className="text-xs">
-                                                    {clase.level}
+                                                <Badge variant="outline" className="text-xs uppercase">
+                                                    {translateLevel(clase.level)}
                                                 </Badge>
                                             </div>
                                         </div>
 
                                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                             <Users className="w-4 h-4" />
-                                            <span>{clase.enrolled}/{clase.maxStudents} estudiantes inscritos</span>
+                                            <span>Capacidad: {clase.capacity || 20} estudiantes</span>
                                         </div>
                                     </div>
 
                                     <div className="flex flex-col gap-2">
-                                        <Button variant="hero" className="w-full lg:w-auto">
-                                            <Play className="w-4 h-4 mr-2" />
-                                            Unirse a la Clase
-                                        </Button>
-                                        <Button variant="outline" className="w-full lg:w-auto">
-                                            Ver Detalles
-                                        </Button>
+                                        {clase.isRegistered ? (
+                                            <Button
+                                                variant="hero"
+                                                className="w-full lg:w-auto"
+                                                onClick={() => {
+                                                    const startTime = new Date(clase.start_time).getTime();
+                                                    const now = new Date().getTime();
+                                                    const diff = startTime - now;
+
+                                                    if (diff <= 15 * 60 * 1000) { // 15 mins before
+                                                        toast.info("Conectando con la sala de Zoom...");
+                                                        if (clase.video_url) window.open(clase.video_url, '_blank');
+                                                    } else {
+                                                        toast.info("La clase comenzará en breve. Podrás unirte 15 minutos antes.");
+                                                    }
+                                                }}
+                                            >
+                                                <Play className="w-4 h-4 mr-2" />
+                                                Unirse
+                                            </Button>
+                                        ) : (
+                                            <Button
+                                                variant="hero"
+                                                className="w-full lg:w-auto"
+                                                onClick={() => registerMutation.mutate(clase.id)}
+                                                disabled={registerMutation.isPending}
+                                            >
+                                                {registerMutation.isPending ? (
+                                                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                                                ) : (
+                                                    <CheckCircle2 className="w-4 h-4 mr-2" />
+                                                )}
+                                                Inscribirse
+                                            </Button>
+                                        )}
                                     </div>
                                 </div>
                             </Card>
                         ))}
+                        {upcomingClasses.length === 0 && (
+                            <p className="text-center py-12 text-muted-foreground italic">No hay clases próximas disponibles.</p>
+                        )}
                     </div>
                 )}
 
@@ -256,67 +245,46 @@ const StudentClasses = () => {
                                                 </h3>
                                                 <p className="text-sm text-muted-foreground flex items-center gap-2">
                                                     <Users className="w-4 h-4" />
-                                                    {clase.teacher}
+                                                    Profesor: {clase.teacher_id === 1 ? 'Maider Quintana' : 'Admin'}
                                                 </p>
                                             </div>
-                                            {clase.attended ? (
-                                                <Badge className="bg-green-500/10 text-green-500 border-green-500/20">
-                                                    <CheckCircle2 className="w-3 h-3 mr-1" />
-                                                    Asistida
-                                                </Badge>
-                                            ) : (
-                                                <Badge className="bg-red-500/10 text-red-500 border-red-500/20">
-                                                    <XCircle className="w-3 h-3 mr-1" />
-                                                    No asistida
-                                                </Badge>
-                                            )}
+                                            <Badge className="bg-green-500/10 text-green-500 border-green-500/20">
+                                                <CheckCircle2 className="w-3 h-3 mr-1" />
+                                                Completada
+                                            </Badge>
                                         </div>
 
                                         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-3">
                                             <div className="flex items-center gap-2 text-sm">
                                                 <Calendar className="w-4 h-4 text-muted-foreground" />
-                                                <span className="text-foreground">{new Date(clase.date).toLocaleDateString('es-ES')}</span>
+                                                <span className="text-foreground">{new Date(clase.start_time).toLocaleDateString('es-ES')}</span>
                                             </div>
                                             <div className="flex items-center gap-2 text-sm">
                                                 <Clock className="w-4 h-4 text-muted-foreground" />
-                                                <span className="text-foreground">{clase.duration}</span>
+                                                <span className="text-foreground">60 min</span>
                                             </div>
                                             <div>
-                                                <Badge variant="outline" className="text-xs">
-                                                    {clase.level}
+                                                <Badge variant="outline" className="text-xs uppercase">
+                                                    {translateLevel(clase.level)}
                                                 </Badge>
                                             </div>
-                                        </div>
-
-                                        <div className="flex items-center gap-1">
-                                            {[...Array(5)].map((_, i) => (
-                                                <svg
-                                                    key={i}
-                                                    className={`w-4 h-4 ${i < clase.rating ? 'text-primary fill-primary' : 'text-muted-foreground'}`}
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                    stroke="currentColor"
-                                                >
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                                                </svg>
-                                            ))}
                                         </div>
                                     </div>
 
                                     <div className="flex flex-col gap-2">
-                                        {clase.type === "recorded" && (
-                                            <Button variant="hero" className="w-full lg:w-auto">
-                                                <Play className="w-4 h-4 mr-2" />
-                                                Ver Grabación
-                                            </Button>
-                                        )}
                                         <Button variant="outline" className="w-full lg:w-auto">
-                                            Ver Materiales
+                                            Ver Grabación
+                                        </Button>
+                                        <Button variant="outline" className="w-full lg:w-auto">
+                                            Materiales
                                         </Button>
                                     </div>
                                 </div>
                             </Card>
                         ))}
+                        {completedClasses.length === 0 && (
+                            <p className="text-center py-12 text-muted-foreground italic">No hay historial de clases.</p>
+                        )}
                     </div>
                 )}
             </div>

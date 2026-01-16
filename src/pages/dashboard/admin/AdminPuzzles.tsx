@@ -15,44 +15,26 @@ import {
     Flame,
     TrendingUp,
     Brain,
+    Loader2
 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/api";
 
 const AdminPuzzles = () => {
-    const puzzles = [
-        {
-            id: 1,
-            title: "Mate en 2 (Ataque a la Bayoneta)",
-            fen: "r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4",
-            difficulty: "Intermedio",
-            rating: 1450,
-            solvedBy: 45,
-            successRate: 78,
-            status: "published",
-            publishDate: "2026-01-16",
-        },
-        {
-            id: 2,
-            title: "Táctica de Doble Ataque",
-            fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-            difficulty: "Principiante",
-            rating: 1100,
-            solvedBy: 128,
-            successRate: 92,
-            status: "published",
-            publishDate: "2026-01-15",
-        },
-        {
-            id: 3,
-            title: "Final de Peones Avanzado",
-            fen: "8/8/8/k7/8/1P6/1P6/K7 w - - 0 1",
-            difficulty: "Avanzado",
-            rating: 1900,
-            solvedBy: 12,
-            successRate: 35,
-            status: "draft",
-            publishDate: "Próximamente",
-        },
-    ];
+    const { data: puzzles, isLoading, isError } = useQuery<any[]>({
+        queryKey: ["admin-puzzles"],
+        queryFn: () => api.puzzles.list(),
+    });
+
+    if (isLoading) {
+        return (
+            <DashboardLayout role="admin">
+                <div className="flex items-center justify-center min-h-[400px]">
+                    <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                </div>
+            </DashboardLayout>
+        );
+    }
 
     return (
         <DashboardLayout role="admin">
@@ -78,28 +60,28 @@ const AdminPuzzles = () => {
                     <Card className="p-5 bg-card border-border">
                         <div className="flex flex-col gap-2">
                             <Brain className="w-5 h-5 text-primary" />
-                            <p className="text-2xl font-bold text-foreground">156</p>
+                            <p className="text-2xl font-bold text-foreground">{puzzles?.length || 0}</p>
                             <p className="text-xs text-muted-foreground font-medium uppercase">Total Problemas</p>
                         </div>
                     </Card>
                     <Card className="p-5 bg-card border-border">
                         <div className="flex flex-col gap-2">
                             <Flame className="w-5 h-5 text-accent" />
-                            <p className="text-2xl font-bold text-foreground">12</p>
+                            <p className="text-2xl font-bold text-foreground">0</p>
                             <p className="text-xs text-muted-foreground font-medium uppercase">Resoluciones Hoy</p>
                         </div>
                     </Card>
                     <Card className="p-5 bg-card border-border">
                         <div className="flex flex-col gap-2">
                             <TrendingUp className="w-5 h-5 text-green-500" />
-                            <p className="text-2xl font-bold text-foreground">84%</p>
+                            <p className="text-2xl font-bold text-foreground">--%</p>
                             <p className="text-xs text-muted-foreground font-medium uppercase">Tasa de Éxito</p>
                         </div>
                     </Card>
                     <Card className="p-5 bg-card border-border">
                         <div className="flex flex-col gap-2">
                             <Clock className="w-5 h-5 text-blue-500" />
-                            <p className="text-2xl font-bold text-foreground">4m 20s</p>
+                            <p className="text-2xl font-bold text-foreground">--</p>
                             <p className="text-xs text-muted-foreground font-medium uppercase">Tiempo Medio</p>
                         </div>
                     </Card>
@@ -130,53 +112,49 @@ const AdminPuzzles = () => {
 
                 {/* Puzzle Grid */}
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {puzzles.map((puzzle) => (
+                    {puzzles?.map((puzzle) => (
                         <Card key={puzzle.id} className="bg-card border-border overflow-hidden hover:border-primary/40 transition-all group">
                             <div className="aspect-square bg-secondary/50 flex items-center justify-center p-8 relative">
                                 <Target className="w-20 h-20 text-muted-foreground/20 group-hover:scale-110 transition-transform" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent flex items-end p-4">
-                                    <Badge className={
-                                        puzzle.status === "published"
-                                            ? "bg-green-500/10 text-green-500 border-green-500/20"
-                                            : "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
-                                    }>
-                                        {puzzle.status === "published" ? "Publicado" : "Borrador"}
+                                    <Badge className="bg-green-500/10 text-green-500 border-green-500/20">
+                                        Publicado
                                     </Badge>
                                 </div>
                             </div>
                             <div className="p-4 space-y-4">
                                 <div>
-                                    <h3 className="font-semibold text-foreground line-clamp-1">{puzzle.title}</h3>
-                                    <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-                                        <Clock className="w-3 h-3" />
-                                        Publicado: {puzzle.publishDate}
+                                    <h3 className="font-semibold text-foreground line-clamp-1">Problema #{puzzle.id}</h3>
+                                    <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1 truncate">
+                                        FEN: {puzzle.fen}
                                     </p>
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-2">
                                     <div className="p-2 rounded-lg bg-secondary/50 text-center">
-                                        <p className="text-xs text-muted-foreground">Dificultad</p>
-                                        <p className="text-sm font-medium text-foreground">{puzzle.difficulty}</p>
+                                        <p className="text-xs text-muted-foreground">Rating</p>
+                                        <p className="text-sm font-medium text-foreground">{puzzle.rating || 1500}</p>
                                     </div>
                                     <div className="p-2 rounded-lg bg-secondary/50 text-center">
-                                        <p className="text-xs text-muted-foreground">Rating</p>
-                                        <p className="text-sm font-medium text-foreground">{puzzle.rating}</p>
+                                        <p className="text-xs text-muted-foreground">Turno</p>
+                                        <p className="text-sm font-medium text-foreground">{puzzle.turn === 'w' ? 'Blancas' : 'Negras'}</p>
                                     </div>
                                 </div>
 
                                 <div className="flex items-center justify-between pt-2 border-t border-border">
-                                    <div className="flex gap-3 text-xs text-muted-foreground">
-                                        <span className="flex items-center gap-1">
-                                            <CheckCircle2 className="w-3 h-3 text-green-500" />
-                                            {puzzle.successRate}%
-                                        </span>
-                                        <span>{puzzle.solvedBy} resueltos</span>
+                                    <div className="text-xs text-muted-foreground">
+                                        Solución: {puzzle.solution?.join(', ')}
                                     </div>
                                     <Button variant="ghost" size="sm" className="h-8">Editar</Button>
                                 </div>
                             </div>
                         </Card>
                     ))}
+                    {(!puzzles || puzzles.length === 0) && (
+                        <div className="col-span-full text-center py-12 text-muted-foreground">
+                            No se encontraron problemas.
+                        </div>
+                    )}
                 </div>
             </div>
         </DashboardLayout>

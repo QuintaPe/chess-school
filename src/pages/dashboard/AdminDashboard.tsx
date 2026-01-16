@@ -13,36 +13,61 @@ import {
   ArrowRight,
   MoreVertical,
   Calendar,
+  Loader2,
 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/api";
 
 const AdminDashboard = () => {
+  const { data: students, isLoading: loadingStudents } = useQuery<any[]>({
+    queryKey: ["admin-students"],
+    queryFn: () => api.users.list("student"),
+  });
+
+  const { data: classes, isLoading: loadingClasses } = useQuery<any[]>({
+    queryKey: ["admin-classes"],
+    queryFn: () => api.classes.list(),
+  });
+
+  const { data: puzzles, isLoading: loadingPuzzles } = useQuery<any[]>({
+    queryKey: ["admin-puzzles"],
+    queryFn: () => api.puzzles.list(),
+  });
+
+  const { data: courses, isLoading: loadingCourses } = useQuery<any[]>({
+    queryKey: ["admin-courses"],
+    queryFn: () => api.courses.list(),
+  });
+
+  const isLoading = loadingStudents || loadingClasses || loadingPuzzles || loadingCourses;
+
   const stats = [
     {
       label: "Total Alumnos",
-      value: "156",
-      change: "+12%",
+      value: students?.length.toString() || "0",
+      change: "+0%",
       icon: <Users className="w-6 h-6 text-primary" />,
       color: "primary",
     },
     {
-      label: "Clases Activas",
-      value: "8",
-      change: "+2",
+      label: "Total Clases",
+      value: classes?.length.toString() || "0",
+      change: "+0",
       icon: <GraduationCap className="w-6 h-6 text-accent" />,
       color: "accent",
     },
     {
-      label: "Problemas Resueltos",
-      value: "1,245",
-      change: "+18%",
+      label: "Problemas",
+      value: puzzles?.length.toString() || "0",
+      change: "+0",
       icon: <Target className="w-6 h-6 text-blue-500" />,
       color: "blue",
     },
     {
-      label: "Ingresos (Mes)",
-      value: "4,250€",
-      change: "+5%",
-      icon: <CreditCard className="w-6 h-6 text-green-500" />,
+      label: "Cursos",
+      value: courses?.length.toString() || "0",
+      change: "+0",
+      icon: <BookOpen className="w-6 h-6 text-green-500" />,
       color: "green",
     },
   ];
@@ -50,43 +75,24 @@ const AdminDashboard = () => {
   const recentActivity = [
     {
       id: 1,
-      user: "Juan Pérez",
-      action: "se ha unido al plan Premium",
-      time: "hace 2 horas",
-      initial: "J",
-    },
-    {
-      id: 2,
-      user: "María García",
-      action: "ha completado el curso 'Fundamentos'",
-      time: "hace 5 horas",
-      initial: "M",
-    },
-    {
-      id: 3,
-      user: "Carlos Rodríguez",
-      action: "ha resuelto el problema diario",
-      time: "hace 6 horas",
-      initial: "C",
+      user: "Sistema",
+      action: "Bienvenido al panel de administración",
+      time: "Recién",
+      initial: "S",
     },
   ];
 
-  const upcomingClasses = [
-    {
-      id: 1,
-      title: "Táctica Intermedia",
-      instructor: "Maider Quintana",
-      time: "Hoy, 18:00",
-      students: 12,
-    },
-    {
-      id: 2,
-      title: "Finales de Torre",
-      instructor: "Maider Quintana",
-      time: "Mañana, 17:00",
-      students: 8,
-    },
-  ];
+  const upcomingClasses = classes?.filter(c => new Date(c.start_time) > new Date()).slice(0, 3) || [];
+
+  if (isLoading) {
+    return (
+      <DashboardLayout role="admin">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout role="admin">
@@ -121,12 +127,9 @@ const AdminDashboard = () => {
                 <div className={`w-12 h-12 rounded-xl bg-${stat.color}-500/10 flex items-center justify-center`}>
                   {stat.icon}
                 </div>
-                <span className="text-xs font-semibold text-green-500 bg-green-500/10 px-2 py-0.5 rounded-full">
-                  {stat.change}
-                </span>
               </div>
               <div className="mt-4">
-                <p className="text-3xl font-bold text-foreground group-hover:scale-105 transition-transform origin-left lowercase">
+                <p className="text-3xl font-bold text-foreground group-hover:scale-105 transition-transform origin-left">
                   {stat.value}
                 </p>
                 <p className="text-sm text-muted-foreground mt-1">{stat.label}</p>
@@ -167,20 +170,26 @@ const AdminDashboard = () => {
             <Card className="p-6 bg-card border-border">
               <h2 className="text-lg font-serif font-bold text-foreground mb-4">Próximas Clases</h2>
               <div className="space-y-4">
-                {upcomingClasses.map((clase) => (
-                  <div key={clase.id} className="p-4 rounded-xl bg-secondary/30 border border-border hover:bg-secondary/50 transition-colors">
-                    <h3 className="font-semibold text-foreground">{clase.title}</h3>
-                    <div className="flex items-center justify-between mt-2">
-                      <div className="flex flex-col">
-                        <span className="text-xs text-muted-foreground">{clase.time}</span>
-                        <span className="text-xs text-primary font-medium">{clase.students} alumnos</span>
+                {upcomingClasses.length > 0 ? (
+                  upcomingClasses.map((clase) => (
+                    <div key={clase.id} className="p-4 rounded-xl bg-secondary/30 border border-border hover:bg-secondary/50 transition-colors">
+                      <h3 className="font-semibold text-foreground">{clase.title}</h3>
+                      <div className="flex items-center justify-between mt-2">
+                        <div className="flex flex-col">
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(clase.start_time).toLocaleString("es-ES", { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                          <span className="text-xs text-primary font-medium">{clase.level}</span>
+                        </div>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-primary">
+                          <Play className="w-4 h-4" />
+                        </Button>
                       </div>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-primary">
-                        <Play className="w-4 h-4" />
-                      </Button>
                     </div>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <p className="text-xs text-muted-foreground italic text-center py-4">No hay clases próximas.</p>
+                )}
                 <Button variant="outline" className="w-full text-xs h-9">Agenda Completa</Button>
               </div>
             </Card>
