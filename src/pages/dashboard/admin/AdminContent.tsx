@@ -3,21 +3,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import {
     BookOpen,
     Plus,
     Search,
-    MoreVertical,
     Layers,
     FileText,
     Video,
-    Eye,
-    Settings,
-    Archive,
     Loader2,
     Trash2,
-    Edit
+    Edit,
+    Download
 } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
@@ -42,12 +38,19 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from "@/components/ui/tabs";
 
 const AdminContent = () => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+    const [isMaterialDialogOpen, setIsMaterialDialogOpen] = useState(false);
     const [editingCourse, setEditingCourse] = useState<Course | null>(null);
 
     const [newCourse, setNewCourse] = useState({
@@ -60,9 +63,20 @@ const AdminContent = () => {
         is_published: true
     });
 
-    const { data: courses, isLoading, isError } = useQuery<Course[]>({
+    const [newMaterial, setNewMaterial] = useState({
+        name: "",
+        type: "PDF",
+        url: ""
+    });
+
+    const { data: courses, isLoading: loadingCourses } = useQuery<Course[]>({
         queryKey: ["admin-courses"],
         queryFn: () => api.courses.list(),
+    });
+
+    const { data: materials, isLoading: loadingMaterials } = useQuery<any[]>({
+        queryKey: ["admin-materials"],
+        queryFn: () => api.materials.list(),
     });
 
     const createMutation = useMutation({
@@ -71,70 +85,37 @@ const AdminContent = () => {
             queryClient.invalidateQueries({ queryKey: ["admin-courses"] });
             toast.success("Curso creado con éxito");
             setIsCreateDialogOpen(false);
-            setNewCourse({
-                title: "",
-                description: "",
-                level: "beginner",
-                category: "General",
-                price: 0,
-                thumbnail_url: "",
-                is_published: true
-            });
         },
-        onError: (error: any) => {
-            toast.error(`Error al crear el curso: ${error.message}`);
-        }
+        onError: (error: any) => toast.error(`Error: ${error.message}`)
     });
 
-    const updateMutation = useMutation({
-        mutationFn: ({ id, data }: { id: number, data: any }) => api.courses.update(id, data),
+    const materialMutation = useMutation({
+        mutationFn: (data: any) => api.materials.create(data),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["admin-courses"] });
-            toast.success("Curso actualizado con éxito");
-            setIsEditDialogOpen(false);
-            setEditingCourse(null);
+            queryClient.invalidateQueries({ queryKey: ["admin-materials"] });
+            toast.success("Material añadido");
+            setIsMaterialDialogOpen(false);
         },
-        onError: (error: any) => {
-            toast.error(`Error al actualizar el curso: ${error.message}`);
-        }
+        onError: (error: any) => toast.error(`Error: ${error.message}`)
     });
 
-    const deleteMutation = useMutation({
+    const deleteCourseMutation = useMutation({
         mutationFn: (id: number) => api.courses.delete(id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["admin-courses"] });
             toast.success("Curso eliminado");
-        },
-        onError: (error: any) => {
-            toast.error(`Error al eliminar el curso: ${error.message}`);
         }
     });
 
-    const handleCreateCourse = (e: React.FormEvent) => {
-        e.preventDefault();
-        createMutation.mutate(newCourse);
-    };
-
-    const handleEditCourse = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (editingCourse) {
-            const data = {
-                title: editingCourse.title,
-                description: editingCourse.description,
-                level: editingCourse.level,
-                price: editingCourse.price,
-                category: editingCourse.category
-            };
-            updateMutation.mutate({ id: editingCourse.id, data });
+    const deleteMaterialMutation = useMutation({
+        mutationFn: (id: number) => api.materials.delete(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["admin-materials"] });
+            toast.success("Material eliminado");
         }
-    };
+    });
 
-    const materials = [
-        { id: 1, name: "Guía de Aperturas.pdf", type: "PDF", size: "2.4 MB" },
-        { id: 2, name: "Plan de Entrenamiento.docx", type: "Doc", size: "1.1 MB" },
-    ];
-
-    if (isLoading) {
+    if (loadingCourses || loadingMaterials) {
         return (
             <DashboardLayout role="admin">
                 <div className="flex items-center justify-center min-h-[400px]">
@@ -150,291 +131,142 @@ const AdminContent = () => {
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                        <h1 className="text-3xl font-serif font-bold text-foreground">
-                            Gestión de Contenido
-                        </h1>
-                        <p className="text-muted-foreground mt-1">
-                            Organiza cursos, lecciones y materiales de estudio
-                        </p>
-                    </div>
-                    <div className="flex gap-2">
-                        <Button variant="outline">
-                            <Plus className="w-4 h-4 mr-2" />
-                            Nuevo Material
-                        </Button>
-                        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-                            <DialogTrigger asChild>
-                                <Button variant="hero">
-                                    <Plus className="w-4 h-4 mr-2" />
-                                    Nuevo Curso
-                                </Button>
-                            </DialogTrigger>
-                            <DialogContent className="sm:max-w-[500px] bg-card border-border">
-                                <DialogHeader>
-                                    <DialogTitle className="text-2xl font-serif">Crear Nuevo Curso</DialogTitle>
-                                </DialogHeader>
-                                <form onSubmit={handleCreateCourse} className="space-y-4 py-4">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="title">Título</Label>
-                                        <Input
-                                            id="title"
-                                            value={newCourse.title}
-                                            onChange={(e) => setNewCourse({ ...newCourse, title: e.target.value })}
-                                            placeholder="Ej: Fundamentos del Ajedrez"
-                                            required
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="description">Descripción</Label>
-                                        <Textarea
-                                            id="description"
-                                            value={newCourse.description}
-                                            onChange={(e) => setNewCourse({ ...newCourse, description: e.target.value })}
-                                            placeholder="Breve descripción del curso..."
-                                            required
-                                        />
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="level">Nivel</Label>
-                                            <Select
-                                                value={newCourse.level}
-                                                onValueChange={(value) => setNewCourse({ ...newCourse, level: value })}
-                                            >
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Seleccionar nivel" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="beginner">Principiante</SelectItem>
-                                                    <SelectItem value="intermediate">Intermedio</SelectItem>
-                                                    <SelectItem value="advanced">Avanzado</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label htmlFor="price">Precio (€)</Label>
-                                            <Input
-                                                id="price"
-                                                type="number"
-                                                value={newCourse.price}
-                                                onChange={(e) => setNewCourse({ ...newCourse, price: Number(e.target.value) })}
-                                                min="0"
-                                            />
-                                        </div>
-                                    </div>
-                                    <DialogFooter>
-                                        <Button type="button" variant="ghost" onClick={() => setIsCreateDialogOpen(false)}>
-                                            Cancelar
-                                        </Button>
-                                        <Button type="submit" variant="hero" disabled={createMutation.isPending}>
-                                            {createMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Crear Curso"}
-                                        </Button>
-                                    </DialogFooter>
-                                </form>
-                            </DialogContent>
-                        </Dialog>
+                        <h1 className="text-3xl font-serif font-bold text-foreground">Gestión de Contenido</h1>
+                        <p className="text-muted-foreground mt-1">Organiza cursos, lecciones y materiales</p>
                     </div>
                 </div>
 
-                {/* Edit Dialog */}
-                <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-                    <DialogContent className="sm:max-w-[500px] bg-card border-border">
-                        <DialogHeader>
-                            <DialogTitle className="text-2xl font-serif">Editar Curso</DialogTitle>
-                        </DialogHeader>
-                        {editingCourse && (
-                            <form onSubmit={handleEditCourse} className="space-y-4 py-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="edit-title">Título</Label>
-                                    <Input
-                                        id="edit-title"
-                                        value={editingCourse.title}
-                                        onChange={(e) => setEditingCourse({ ...editingCourse, title: e.target.value })}
-                                        required
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="edit-description">Descripción</Label>
-                                    <Textarea
-                                        id="edit-description"
-                                        value={editingCourse.description}
-                                        onChange={(e) => setEditingCourse({ ...editingCourse, description: e.target.value })}
-                                        required
-                                    />
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="edit-level">Nivel</Label>
-                                        <Select
-                                            value={editingCourse.level}
-                                            onValueChange={(value) => setEditingCourse({ ...editingCourse, level: value as any })}
-                                        >
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Seleccionar nivel" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="beginner">Principiante</SelectItem>
-                                                <SelectItem value="intermediate">Intermedio</SelectItem>
-                                                <SelectItem value="advanced">Avanzado</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="edit-price">Precio (€)</Label>
-                                        <Input
-                                            id="edit-price"
-                                            type="number"
-                                            value={editingCourse.price}
-                                            onChange={(e) => setEditingCourse({ ...editingCourse, price: Number(e.target.value) })}
-                                            min="0"
-                                        />
-                                    </div>
-                                </div>
-                                <DialogFooter>
-                                    <Button type="button" variant="ghost" onClick={() => setIsEditDialogOpen(false)}>
-                                        Cancelar
-                                    </Button>
-                                    <Button type="submit" variant="hero" disabled={updateMutation.isPending}>
-                                        {updateMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Guardar Cambios"}
-                                    </Button>
-                                </DialogFooter>
-                            </form>
-                        )}
-                    </DialogContent>
-                </Dialog>
+                <Tabs defaultValue="courses" className="space-y-6">
+                    <TabsList className="bg-secondary/50 p-1">
+                        <TabsTrigger value="courses" className="px-8">Cursos</TabsTrigger>
+                        <TabsTrigger value="materials" className="px-8">Materiales</TabsTrigger>
+                    </TabsList>
 
-                {/* Content Inventory */}
-                <div className="grid lg:grid-cols-3 gap-8">
-                    {/* Main List */}
-                    <div className="lg:col-span-2 space-y-6">
-                        <div className="flex items-center justify-between">
-                            <h2 className="text-xl font-serif font-bold text-foreground">Cursos</h2>
-                            <div className="flex items-center gap-2">
-                                <Search className="w-4 h-4 text-muted-foreground" />
-                                <span className="text-sm text-muted-foreground">{courses?.length || 0} cursos en total</span>
-                            </div>
+                    <TabsContent value="courses" className="space-y-6">
+                        <div className="flex justify-between items-center">
+                            <h2 className="text-xl font-serif font-bold">Mis Cursos ({courses?.length})</h2>
+                            <Button variant="hero" onClick={() => setIsCreateDialogOpen(true)}>
+                                <Plus className="w-4 h-4 mr-2" /> Nuevo Curso
+                            </Button>
                         </div>
 
                         <div className="grid gap-4">
                             {courses?.map((course) => (
                                 <Card key={course.id} className="p-5 bg-card border-border hover:border-primary/40 transition-colors">
-                                    <div className="flex items-start gap-4">
-                                        <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center shrink-0 overflow-hidden">
-                                            {course.thumbnail_url ? (
-                                                <img src={course.thumbnail_url} alt={course.title} className="w-full h-full object-cover" />
-                                            ) : (
-                                                <BookOpen className="w-6 h-6 text-primary" />
-                                            )}
+                                    <div className="flex items-start justify-between">
+                                        <div className="flex gap-4">
+                                            <div className="w-16 h-16 rounded-xl bg-secondary flex items-center justify-center shrink-0">
+                                                <BookOpen className="w-8 h-8 text-primary" />
+                                            </div>
+                                            <div>
+                                                <h3 className="font-semibold text-lg">{course.title}</h3>
+                                                <div className="flex gap-2 mt-1">
+                                                    <Badge variant="outline">{course.level}</Badge>
+                                                    <Badge variant="outline" className="text-primary border-primary/20">{course.price === 0 ? "Gratis" : `${course.price}€`}</Badge>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className="flex-1 space-y-3">
-                                            <div className="flex items-start justify-between">
-                                                <div>
-                                                    <h3 className="font-semibold text-foreground">{course.title}</h3>
-                                                    <div className="flex items-center gap-2 mt-1">
-                                                        <Badge variant="outline" className="text-[10px] h-4 uppercase tracking-wider">{course.category}</Badge>
-                                                        <Badge variant="outline" className="text-[10px] h-4 uppercase">
-                                                            {course.level === "beginner" ? "Principiante" : course.level === "intermediate" ? "Intermedio" : "Avanzado"}
-                                                        </Badge>
-                                                    </div>
-                                                </div>
-                                                <div className="flex gap-1">
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        className="h-8 w-8 p-0 hover:bg-secondary"
-                                                        onClick={() => {
-                                                            setEditingCourse(course);
-                                                            setIsEditDialogOpen(true);
-                                                        }}
-                                                    >
-                                                        <Edit className="w-4 h-4" />
-                                                    </Button>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
-                                                        onClick={() => {
-                                                            if (window.confirm("¿Estás seguro de que quieres eliminar este curso?")) {
-                                                                deleteMutation.mutate(course.id);
-                                                            }
-                                                        }}
-                                                    >
-                                                        <Trash2 className="w-4 h-4" />
-                                                    </Button>
-                                                </div>
-                                            </div>
-
-                                            <div className="flex items-center justify-between pt-2">
-                                                <div className="flex gap-4">
-                                                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                                                        <Layers className="w-3.5 h-3.5" />
-                                                        {course.lessons?.length || 0} lecciones
-                                                    </div>
-                                                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                                                        <span className="font-medium text-foreground">{course.price === 0 ? "Gratis" : `${course.price}€`}</span>
-                                                    </div>
-                                                </div>
-                                                <div className="flex gap-2">
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        className="h-8 text-xs underline"
-                                                        onClick={() => navigate(`/admin/contenido/${course.id}`)}
-                                                    >
-                                                        Gestionar Lecciones
-                                                    </Button>
-                                                </div>
-                                            </div>
+                                        <div className="flex gap-2">
+                                            <Button variant="ghost" size="sm" onClick={() => navigate(`/admin/contenido/${course.id}`)}>
+                                                <Layers className="w-4 h-4 mr-2" /> Lecciones
+                                            </Button>
+                                            <Button variant="ghost" size="icon" className="text-destructive" onClick={() => {
+                                                if (window.confirm("¿Eliminar curso?")) deleteCourseMutation.mutate(course.id);
+                                            }}>
+                                                <Trash2 className="w-4 h-4" />
+                                            </Button>
                                         </div>
                                     </div>
                                 </Card>
                             ))}
                         </div>
-                    </div>
+                    </TabsContent>
 
-                    {/* Sidebar Info */}
-                    <div className="space-y-8">
-                        {/* Quick Actions */}
-                        <Card className="p-6 bg-card border-border">
-                            <h2 className="text-lg font-serif font-bold text-foreground mb-4">Herramientas</h2>
+                    <TabsContent value="materials" className="space-y-6">
+                        <div className="flex justify-between items-center">
+                            <h2 className="text-xl font-serif font-bold">Biblioteca de Materiales ({materials?.length})</h2>
+                            <Button variant="hero" onClick={() => setIsMaterialDialogOpen(true)}>
+                                <Plus className="w-4 h-4 mr-2" /> Subir Material
+                            </Button>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {materials?.map((material) => (
+                                <Card key={material.id} className="p-4 bg-card border-border hover:border-primary/40 transition-colors group">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-lg bg-secondary flex items-center justify-center">
+                                            <FileText className="w-6 h-6 text-muted-foreground" />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="font-medium text-foreground truncate">{material.name}</p>
+                                            <p className="text-xs text-muted-foreground">{material.type} • {material.size || "1.2 MB"}</p>
+                                        </div>
+                                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => window.open(material.url)}>
+                                                <Download className="w-4 h-4" />
+                                            </Button>
+                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => deleteMaterialMutation.mutate(material.id)}>
+                                                <Trash2 className="w-4 h-4" />
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </Card>
+                            ))}
+                            {(!materials || materials.length === 0) && (
+                                <div className="col-span-full py-12 text-center text-muted-foreground border-2 border-dashed border-border rounded-xl">
+                                    No hay materiales subidos todavía.
+                                </div>
+                            )}
+                        </div>
+                    </TabsContent>
+                </Tabs>
+
+                {/* Dialogs for Course and Material creation */}
+                <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+                    <DialogContent>
+                        <DialogHeader><DialogTitle>Nuevo Curso</DialogTitle></DialogHeader>
+                        <form onSubmit={(e) => { e.preventDefault(); createMutation.mutate(newCourse); }} className="space-y-4 py-4">
                             <div className="space-y-2">
-                                <Button variant="outline" className="w-full justify-start h-10">
-                                    <Archive className="w-4 h-4 mr-3 text-muted-foreground" />
-                                    Archivo de Contenido
-                                </Button>
-                                <Button variant="outline" className="w-full justify-start h-10">
-                                    <Settings className="w-4 h-4 mr-3 text-muted-foreground" />
-                                    Configurar Categorías
-                                </Button>
-                                <Button variant="outline" className="w-full justify-start h-10">
-                                    <FileText className="w-4 h-4 mr-3 text-muted-foreground" />
-                                    Exportar Reportes
-                                </Button>
+                                <Label>Título</Label>
+                                <Input value={newCourse.title} onChange={(e) => setNewCourse({ ...newCourse, title: e.target.value })} required />
                             </div>
-                        </Card>
+                            <div className="space-y-2">
+                                <Label>Descripción</Label>
+                                <Textarea value={newCourse.description} onChange={(e) => setNewCourse({ ...newCourse, description: e.target.value })} required />
+                            </div>
+                            <Button type="submit" variant="hero" className="w-full" disabled={createMutation.isPending}>Crear Curso</Button>
+                        </form>
+                    </DialogContent>
+                </Dialog>
 
-                        {/* Content Stats */}
-                        <Card className="p-6 bg-primary/5 border-primary/20">
-                            <h2 className="text-lg font-serif font-bold text-foreground mb-4">Métricas Globales</h2>
-                            <div className="space-y-4">
-                                <div className="flex justify-between items-center">
-                                    <span className="text-sm text-muted-foreground flex items-center gap-2">
-                                        <Video className="w-4 h-4" />
-                                        Video Tutoriales
-                                    </span>
-                                    <span className="text-sm font-bold">124</span>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <span className="text-sm text-muted-foreground flex items-center gap-2">
-                                        <FileText className="w-4 h-4" />
-                                        PDFs / Guías
-                                    </span>
-                                    <span className="text-sm font-bold">48</span>
-                                </div>
+                <Dialog open={isMaterialDialogOpen} onOpenChange={setIsMaterialDialogOpen}>
+                    <DialogContent>
+                        <DialogHeader><DialogTitle>Subir Material</DialogTitle></DialogHeader>
+                        <form onSubmit={(e) => { e.preventDefault(); materialMutation.mutate(newMaterial); }} className="space-y-4 py-4">
+                            <div className="space-y-2">
+                                <Label>Nombre del archivo</Label>
+                                <Input value={newMaterial.name} onChange={(e) => setNewMaterial({ ...newMaterial, name: e.target.value })} placeholder="Ej: Guía de aperturas" required />
                             </div>
-                        </Card>
-                    </div>
-                </div>
+                            <div className="space-y-2">
+                                <Label>URL del archivo (Google Drive/Dropbox)</Label>
+                                <Input value={newMaterial.url} onChange={(e) => setNewMaterial({ ...newMaterial, url: e.target.value })} placeholder="https://..." required />
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Tipo</Label>
+                                <Select value={newMaterial.type} onValueChange={(v) => setNewMaterial({ ...newMaterial, type: v })}>
+                                    <SelectTrigger><SelectValue /></SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="PDF">PDF</SelectItem>
+                                        <SelectItem value="Doc">Documento</SelectItem>
+                                        <SelectItem value="Video">Video</SelectItem>
+                                        <SelectItem value="Otro">Otro</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <Button type="submit" variant="hero" className="w-full" disabled={materialMutation.isPending}>Guardar Material</Button>
+                        </form>
+                    </DialogContent>
+                </Dialog>
             </div>
         </DashboardLayout>
     );

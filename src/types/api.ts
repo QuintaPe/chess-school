@@ -29,10 +29,17 @@ export interface ClassItem {
 
 export interface Puzzle {
     id: number;
+    externalId?: string; // Original PuzzleId from CSV
     fen: string;
-    solution: string; // SAN or UCI moves
-    description?: string;
-    difficulty?: number;
+    solution: string[]; // UCI moves array
+    rating: number;
+    ratingDeviation?: number;
+    popularity?: number;
+    nbPlays?: number;
+    turn: 'w' | 'b';
+    tags: string[];
+    gameUrl?: string;
+    openingTags?: string[];
 }
 
 export interface PuzzleSolutionResponse {
@@ -49,7 +56,8 @@ export interface Course {
     category: string;
     price: number;
     is_published: boolean;
-    isEnrolled?: boolean; // Booleano que indica si el usuario actual está inscrito
+    isEnrolled?: boolean;
+    progress_percentage?: number;
     lessons?: Lesson[];
 }
 
@@ -62,4 +70,15 @@ export interface Lesson {
     order_index: number;
     duration: number;
     is_free_preview: boolean;
+    is_completed?: boolean;
+}
+
+export interface PaginatedResponse<T> {
+    data: T[];
+    meta: {
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    };
 }

@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import {
     Search,
     UserPlus,
@@ -30,14 +31,65 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
+import { useState } from "react";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+} from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 const AdminStudents = () => {
-    const { data: students, isLoading, isError } = useQuery<any[]>({
+    const queryClient = useQueryClient();
+    const [searchTerm, setSearchTerm] = useState("");
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    const [editingStudent, setEditingStudent] = useState<any>(null);
+
+    const { data: students, isLoading } = useQuery<any[]>({
         queryKey: ["admin-students"],
         queryFn: () => api.users.list("student"),
     });
+
+    const updateMutation = useMutation({
+        mutationFn: ({ id, data }: { id: string, data: any }) => api.users.update(id, data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["admin-students"] });
+            toast.success("Alumno actualizado");
+            setIsEditOpen(false);
+        },
+        onError: (error: Error) => toast.error(error.message)
+    });
+
+    const deleteMutation = useMutation({
+        mutationFn: (id: string) => api.users.delete(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["admin-students"] });
+            toast.success("Alumno dado de baja");
+        },
+        onError: (error: Error) => toast.error(error.message)
+    });
+
+    const filteredStudents = students?.filter(s =>
+        s.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.email?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const handleUpdateSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        updateMutation.mutate({
+            id: editingStudent.id,
+            data: {
+                name: editingStudent.name,
+                subscription_plan: editingStudent.subscription_plan,
+                status: editingStudent.status
+            }
+        });
+    };
 
     const getPlanBadge = (plan: string) => {
         if (!plan) return <Badge variant="outline" className="text-muted-foreground">Free</Badge>;
@@ -106,17 +158,9 @@ const AdminStudents = () => {
                             <Input
                                 placeholder="Buscar por nombre, email..."
                                 className="pl-9 bg-secondary border-border h-10"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
                             />
-                        </div>
-                        <div className="flex gap-2">
-                            <Button variant="outline" size="sm" className="h-10">
-                                <Filter className="w-4 h-4 mr-2" />
-                                Filtros
-                            </Button>
-                            <Button variant="outline" size="sm" className="h-10">
-                                <ArrowUpDown className="w-4 h-4 mr-2" />
-                                Ordenar
-                            </Button>
                         </div>
                     </div>
                 </Card>
@@ -134,7 +178,7 @@ const AdminStudents = () => {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {students?.map((student) => (
+                            {filteredStudents?.map((student) => (
                                 <TableRow key={student.id} className="border-border hover:bg-secondary/30 transition-colors">
                                     <TableCell>
                                         <div className="flex items-center gap-3">
@@ -167,11 +211,17 @@ const AdminStudents = () => {
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end" className="bg-card border-border">
                                                 <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                                                <DropdownMenuItem onClick={() => { }}>Editar alumno</DropdownMenuItem>
-                                                <DropdownMenuItem onClick={() => { }}>Ver progreso</DropdownMenuItem>
-                                                <DropdownMenuItem onClick={() => { }}>Cambiar plan</DropdownMenuItem>
-                                                <DropdownMenuSeparator className="bg-border" />
-                                                <DropdownMenuItem className="text-destructive">
+                                                <DropdownMenuItem onClick={() => {
+                                                    setEditingStudent(student);
+                                                    setIsEditOpen(true);
+                                                }}>
+                                                    Editar alumno
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem className="text-destructive" onClick={() => {
+                                                    if (window.confirm("¿Seguro que quieres dar de baja a este alumno?")) {
+                                                        deleteMutation.mutate(student.id);
+                                                    }
+                                                }}>
                                                     Dar de baja
                                                 </DropdownMenuItem>
                                             </DropdownMenuContent>
@@ -179,23 +229,59 @@ const AdminStudents = () => {
                                     </TableCell>
                                 </TableRow>
                             ))}
-                            {(!students || students.length === 0) && (
-                                <TableRow>
-                                    <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
-                                        No se encontraron alumnos.
-                                    </TableCell>
-                                </TableRow>
-                            )}
                         </TableBody>
                     </Table>
                 </Card>
 
-                {/* Pagination Placeholder */}
-                <div className="flex items-center justify-between px-2">
-                    <p className="text-sm text-muted-foreground">
-                        Mostrando {students?.length || 0} alumnos
-                    </p>
-                </div>
+                {/* Edit Dialog */}
+                <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+                    <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                            <DialogTitle>Editar Alumno</DialogTitle>
+                        </DialogHeader>
+                        {editingStudent && (
+                            <form onSubmit={handleUpdateSubmit} className="space-y-4 py-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="edit-name">Nombre</Label>
+                                    <Input
+                                        id="edit-name"
+                                        value={editingStudent.name}
+                                        onChange={(e) => setEditingStudent({ ...editingStudent, name: e.target.value })}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="edit-plan">Plan de Suscripción</Label>
+                                    <select
+                                        id="edit-plan"
+                                        className="w-full bg-secondary border border-border rounded-md px-3 py-2 text-sm"
+                                        value={editingStudent.subscription_plan}
+                                        onChange={(e) => setEditingStudent({ ...editingStudent, subscription_plan: e.target.value })}
+                                    >
+                                        <option value="free">Gratis</option>
+                                        <option value="premium">Premium</option>
+                                    </select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="edit-status">Estado</Label>
+                                    <select
+                                        id="edit-status"
+                                        className="w-full bg-secondary border border-border rounded-md px-3 py-2 text-sm"
+                                        value={editingStudent.status}
+                                        onChange={(e) => setEditingStudent({ ...editingStudent, status: e.target.value })}
+                                    >
+                                        <option value="active">Activo</option>
+                                        <option value="inactive">Inactivo</option>
+                                    </select>
+                                </div>
+                                <DialogFooter>
+                                    <Button type="submit" variant="hero" disabled={updateMutation.isPending}>
+                                        {updateMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Guardar Cambios"}
+                                    </Button>
+                                </DialogFooter>
+                            </form>
+                        )}
+                    </DialogContent>
+                </Dialog>
             </div>
         </DashboardLayout>
     );

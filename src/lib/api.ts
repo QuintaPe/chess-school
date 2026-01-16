@@ -100,8 +100,55 @@ export const api = {
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
-        list: async () => {
-            const res = await fetch(`${BASE_URL}/puzzles`, { headers: getHeaders() });
+        list: async (params?: { page?: number; limit?: number; ratingMin?: number; ratingMax?: number; tags?: string[] }) => {
+            const url = new URL(`${BASE_URL}/puzzles`);
+            if (params) {
+                Object.entries(params).forEach(([key, value]) => {
+                    if (value !== undefined) {
+                        if (Array.isArray(value)) {
+                            value.forEach(v => url.searchParams.append(key, v));
+                        } else {
+                            url.searchParams.append(key, value.toString());
+                        }
+                    }
+                });
+            }
+            const res = await fetch(url.toString(), { headers: getHeaders() });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        },
+        create: async (data: any) => {
+            const res = await fetch(`${BASE_URL}/puzzles`, {
+                method: 'POST',
+                headers: getHeaders(),
+                body: JSON.stringify(data),
+            });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        },
+        update: async (id: number, data: any) => {
+            const res = await fetch(`${BASE_URL}/puzzles/${id}`, {
+                method: 'PUT',
+                headers: getHeaders(),
+                body: JSON.stringify(data),
+            });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        },
+        delete: async (id: number) => {
+            const res = await fetch(`${BASE_URL}/puzzles/${id}`, {
+                method: 'DELETE',
+                headers: getHeaders(),
+            });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        },
+        importFen: async (fen: string) => {
+            const res = await fetch(`${BASE_URL}/puzzles/import-fen`, {
+                method: 'POST',
+                headers: getHeaders(),
+                body: JSON.stringify({ fen }),
+            });
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
@@ -161,6 +208,14 @@ export const api = {
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
+        completeLesson: async (lessonId: number) => {
+            const res = await fetch(`${BASE_URL}/courses/lessons/${lessonId}/complete`, {
+                method: 'POST',
+                headers: getHeaders(),
+            });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        },
         deleteLesson: async (lessonId: number) => {
             const res = await fetch(`${BASE_URL}/courses/lessons/${lessonId}`, {
                 method: 'DELETE',
@@ -196,6 +251,43 @@ export const api = {
                 method: 'PATCH',
                 headers: getHeaders(),
                 body: JSON.stringify(data),
+            });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        },
+        delete: async (id: string) => {
+            const res = await fetch(`${BASE_URL}/users/${id}`, {
+                method: 'DELETE',
+                headers: getHeaders(),
+            });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        },
+        getStats: async () => {
+            const res = await fetch(`${BASE_URL}/users/me/stats`, { headers: getHeaders() });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        },
+    },
+    materials: {
+        list: async () => {
+            const res = await fetch(`${BASE_URL}/materials`, { headers: getHeaders() });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        },
+        create: async (data: any) => {
+            const res = await fetch(`${BASE_URL}/materials`, {
+                method: 'POST',
+                headers: getHeaders(),
+                body: JSON.stringify(data),
+            });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        },
+        delete: async (id: number) => {
+            const res = await fetch(`${BASE_URL}/materials/${id}`, {
+                method: 'DELETE',
+                headers: getHeaders(),
             });
             if (!res.ok) throw new Error(await res.text());
             return res.json();

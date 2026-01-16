@@ -19,6 +19,7 @@ import NotFound from "./pages/NotFound";
 import StudentClasses from "./pages/dashboard/student/StudentClasses";
 import StudentPuzzles from "./pages/dashboard/student/StudentPuzzles";
 import StudentCourses from "./pages/dashboard/student/StudentCourses";
+import StudentCourseDetail from "./pages/dashboard/student/StudentCourseDetail";
 import StudentProgress from "./pages/dashboard/student/StudentProgress";
 import StudentSettings from "./pages/dashboard/student/StudentSettings";
 
@@ -65,6 +66,7 @@ const App = () => (
               <Route path="/dashboard/clases" element={<StudentClasses />} />
               <Route path="/dashboard/problemas" element={<StudentPuzzles />} />
               <Route path="/dashboard/cursos" element={<StudentCourses />} />
+              <Route path="/dashboard/cursos/:id" element={<StudentCourseDetail />} />
               <Route path="/dashboard/progreso" element={<StudentProgress />} />
               <Route path="/dashboard/configuracion" element={<StudentSettings />} />
             </Route>

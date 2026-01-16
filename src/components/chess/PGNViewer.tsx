@@ -159,12 +159,12 @@ export const PGNViewer = ({ pgnContent }: PGNViewerProps) => {
         return toBoardBoard(tempGame.board());
     }, [currentMoveIndex, history, selectedGameIndex, games]);
 
-    const getLastMoveSquares = () => {
+    const getLastMove = () => {
         if (currentMoveIndex >= 0 && history[currentMoveIndex]) {
             const move = history[currentMoveIndex];
-            return [move.from, move.to];
+            return { from: move.from, to: move.to };
         }
-        return [];
+        return null;
     };
 
     // Convert chess.js board to (string | null)[][]
@@ -245,9 +245,9 @@ export const PGNViewer = ({ pgnContent }: PGNViewerProps) => {
                 <div className="flex flex-col items-center gap-4">
                     <ChessBoard
                         position={getCurrentPosition()}
-                        size="lg" // existing prop
+                        size="lg"
                         interactive={false}
-                        highlightSquares={getLastMoveSquares()}
+                        lastMove={getLastMove()}
                     />
 
                     {/* Controls */}

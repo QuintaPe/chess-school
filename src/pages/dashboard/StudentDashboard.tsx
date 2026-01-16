@@ -137,6 +137,7 @@ const StudentDashboard = () => {
                   size="md"
                   interactive={true}
                   className="shrink-0"
+                  flipped={(dailyPuzzle.turn || dailyPuzzle.fen.split(' ')[1]) === 'w'}
                 />
                 <div className="flex-1 space-y-4">
                   <div className="p-4 rounded-xl bg-secondary/50 border border-border">

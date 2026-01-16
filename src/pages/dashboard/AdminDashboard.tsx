@@ -15,10 +15,12 @@ import {
   Calendar,
   Loader2,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
   const { data: students, isLoading: loadingStudents } = useQuery<any[]>({
     queryKey: ["admin-students"],
     queryFn: () => api.users.list("student"),
@@ -216,25 +218,36 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        {/* Quick Links */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Button variant="outline" className="h-24 flex flex-col items-center justify-center gap-2 border-dashed hover:border-primary/50 hover:bg-primary/5 group" onClick={() => { }}>
+          <Button
+            variant="outline"
+            className="h-24 flex flex-col items-center justify-center gap-2 border-dashed hover:border-primary/50 hover:bg-primary/5 group"
+            onClick={() => navigate('/admin/problemas')}
+          >
             <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
               <Plus className="w-4 h-4 text-primary" />
             </div>
-            <span className="text-xs font-medium">Crear Problema</span>
+            <span className="text-xs font-medium">Gestionar Problemas</span>
           </Button>
-          <Button variant="outline" className="h-24 flex flex-col items-center justify-center gap-2 border-dashed hover:border-accent/50 hover:bg-accent/5 group" onClick={() => { }}>
+          <Button
+            variant="outline"
+            className="h-24 flex flex-col items-center justify-center gap-2 border-dashed hover:border-accent/50 hover:bg-accent/5 group"
+            onClick={() => navigate('/admin/alumnos')}
+          >
             <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center group-hover:scale-110 transition-transform">
               <Users className="w-4 h-4 text-accent" />
             </div>
-            <span className="text-xs font-medium">Exportar Alumnos</span>
+            <span className="text-xs font-medium">Gestionar Alumnos</span>
           </Button>
-          <Button variant="outline" className="h-24 flex flex-col items-center justify-center gap-2 border-dashed hover:border-blue-500/50 hover:bg-blue-500/5 group" onClick={() => { }}>
+          <Button
+            variant="outline"
+            className="h-24 flex flex-col items-center justify-center gap-2 border-dashed hover:border-blue-500/50 hover:bg-blue-500/5 group"
+            onClick={() => navigate('/admin/contenido')}
+          >
             <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <TrendingUp className="w-4 h-4 text-blue-500" />
+              <BookOpen className="w-4 h-4 text-blue-500" />
             </div>
-            <span className="text-xs font-medium">Ver Auditoría</span>
+            <span className="text-xs font-medium">Gestionar Contenido</span>
           </Button>
         </div>
       </div>

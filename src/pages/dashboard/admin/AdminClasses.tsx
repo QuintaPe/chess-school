@@ -38,9 +38,14 @@ const AdminClasses = () => {
     const [editingClass, setEditingClass] = useState<any>(null);
     const queryClient = useQueryClient();
 
-    const { data: classes, isLoading, isError } = useQuery<any[]>({
+    const { data: classes, isLoading } = useQuery<any[]>({
         queryKey: ["admin-classes"],
         queryFn: () => api.classes.list(),
+    });
+
+    const { data: teachers } = useQuery<any[]>({
+        queryKey: ["admin-teachers"],
+        queryFn: () => api.users.list("teacher"),
     });
 
     const createMutation = useMutation({
@@ -87,7 +92,7 @@ const AdminClasses = () => {
             level: formData.get("level"),
             start_time: formData.get("start_time"),
             capacity: parseInt(formData.get("capacity") as string),
-            teacher_id: 1, // Default for now
+            teacher_id: parseInt(formData.get("teacher_id") as string),
             status: "scheduled",
             type: "live"
         };
@@ -102,6 +107,7 @@ const AdminClasses = () => {
             level: formData.get("level"),
             start_time: formData.get("start_time"),
             capacity: parseInt(formData.get("capacity") as string),
+            teacher_id: parseInt(formData.get("teacher_id") as string),
         };
         updateMutation.mutate({ id: editingClass.id, data });
     };
@@ -176,6 +182,25 @@ const AdminClasses = () => {
                                     </div>
                                 </div>
                                 <div className="space-y-2">
+                                    <Label htmlFor="teacher_id">Profesor</Label>
+                                    <select
+                                        name="teacher_id"
+                                        id="teacher_id"
+                                        className="w-full h-10 px-3 rounded-md border border-input bg-secondary text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                                        required
+                                    >
+                                        <option value="">Seleccionar profesor</option>
+                                        {teachers?.map((teacher) => (
+                                            <option key={teacher.id} value={teacher.id}>
+                                                {teacher.name}
+                                            </option>
+                                        ))}
+                                        {(!teachers || teachers.length === 0) && (
+                                            <option value="1">Maider Quintana (Demo)</option>
+                                        )}
+                                    </select>
+                                </div>
+                                <div className="space-y-2">
                                     <Label htmlFor="start_time">Fecha y Hora</Label>
                                     <Input id="start_time" name="start_time" type="datetime-local" required className="bg-secondary" />
                                 </div>
@@ -226,6 +251,25 @@ const AdminClasses = () => {
                                         required
                                         className="bg-secondary"
                                     />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="edit-teacher">Profesor</Label>
+                                    <select
+                                        name="teacher_id"
+                                        id="edit-teacher"
+                                        className="w-full h-10 px-3 rounded-md border border-input bg-secondary text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                                        defaultValue={editingClass.teacher_id}
+                                        required
+                                    >
+                                        {teachers?.map((teacher) => (
+                                            <option key={teacher.id} value={teacher.id}>
+                                                {teacher.name}
+                                            </option>
+                                        ))}
+                                        {(!teachers || teachers.length === 0) && (
+                                            <option value="1">Maider Quintana (Demo)</option>
+                                        )}
+                                    </select>
                                 </div>
                                 <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={updateMutation.isPending}>
                                     {updateMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : "Guardar Cambios"}

@@ -12,12 +12,15 @@ import {
   ChevronRight,
   Flame,
   CheckCircle2,
+  Loader,
   XCircle,
-  Loader2
+  Loader2,
+  ChevronLeft
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
+import { Puzzle, PaginatedResponse } from "@/types/api";
 
 const ProblemasPage = () => {
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
@@ -26,10 +29,16 @@ const ProblemasPage = () => {
   const levels = ["Principiante", "Intermedio", "Avanzado", "Experto"];
   const themes = ["Mate", "Táctica", "Finales", "Aperturas", "Estrategia"];
 
-  const { data: puzzles, isLoading } = useQuery<any[]>({
-    queryKey: ["public-puzzles"],
-    queryFn: () => api.puzzles.list(),
+  const [page, setPage] = useState(1);
+  const limit = 12;
+
+  const { data: puzzlesData, isLoading } = useQuery<PaginatedResponse<Puzzle>>({
+    queryKey: ["public-puzzles", page],
+    queryFn: () => api.puzzles.list({ page, limit }),
   });
+
+  const puzzles = puzzlesData?.data || [];
+  const meta = puzzlesData?.meta;
 
   const { data: dailyPuzzle, isLoading: isLoadingDaily } = useQuery({
     queryKey: ["daily-puzzle"],
@@ -103,7 +112,13 @@ const ProblemasPage = () => {
               <Card className="p-6 md:p-8 bg-gradient-to-br from-card to-secondary/30 border-primary/20">
                 <div className="flex flex-col lg:flex-row items-center gap-8">
                   <div className="shrink-0">
-                    <ChessBoard fen={dailyPuzzle.fen} size="md" interactive className="glow-gold" />
+                    <ChessBoard
+                      fen={dailyPuzzle.fen}
+                      size="md"
+                      interactive
+                      className="glow-gold"
+                      flipped={dailyPuzzle.turn === 'w'}
+                    />
                   </div>
                   <div className="flex-1 text-center lg:text-left">
                     <div className="flex items-center gap-3 justify-center lg:justify-start mb-4">
@@ -150,8 +165,8 @@ const ProblemasPage = () => {
                     key={level}
                     onClick={() => setSelectedLevel(selectedLevel === level ? null : level)}
                     className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${selectedLevel === level
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-secondary text-muted-foreground hover:text-foreground'
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-secondary text-muted-foreground hover:text-foreground'
                       }`}
                   >
                     {level}
@@ -171,12 +186,14 @@ const ProblemasPage = () => {
                     key={problem.id}
                     className="p-4 bg-card border-border hover:border-primary/30 transition-all cursor-pointer group"
                   >
-                    <div className="aspect-square bg-secondary rounded-lg mb-3 flex items-center justify-center relative overflow-hidden">
-                      <span className="text-4xl opacity-10 font-serif">
-                        {problem.turn === 'w' ? '♔' : '♚'}
-                      </span>
+                    <div className="aspect-square bg-secondary rounded-lg mb-3 flex items-center justify-center relative overflow-hidden p-2">
+                      <ChessBoard
+                        fen={problem.fen}
+                        className="w-full h-full"
+                        flipped={(problem.turn || problem.fen.split(' ')[1]) === 'w'}
+                      />
                       <div className="absolute inset-0 bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <Button variant="hero" size="sm">
+                        <Button variant="hero" size="sm" onClick={() => {/* handle navigate/solve */ }}>
                           Resolver
                         </Button>
                       </div>
@@ -189,12 +206,20 @@ const ProblemasPage = () => {
                         Rating: {problem.rating}
                       </span>
                     </div>
+                    <div className="flex flex-wrap gap-1 mt-2 mb-2">
+                      {problem.tags?.slice(0, 2).map((tag: string) => (
+                        <Badge key={tag} variant="secondary" className="text-[8px] px-1.5 py-0 leading-none h-4 uppercase font-bold tracking-tighter bg-secondary/50 text-muted-foreground border-none">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
                     <p className="font-medium text-foreground text-sm line-clamp-1">
                       Problema #{problem.id}
                     </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {problem.solution?.length} movimientos
-                    </p>
+                    <div className="flex items-center justify-between text-xs text-muted-foreground mt-1">
+                      <span>{problem.solution?.length} movimientos</span>
+                      {problem.nbPlays > 0 && <span className="text-[10px] opacity-70 italic">{problem.nbPlays.toLocaleString()} vistas</span>}
+                    </div>
                   </Card>
                 ))}
                 {filteredProblems.length === 0 && (
@@ -205,11 +230,34 @@ const ProblemasPage = () => {
               </div>
             )}
 
-            <div className="text-center mt-8">
-              <Button variant="outline" size="lg">
-                Cargar más problemas
-                <ChevronRight className="w-4 h-4 ml-2" />
-              </Button>
+            <div className="text-center mt-12 flex flex-col items-center gap-6">
+              {meta && meta.totalPages > 1 && (
+                <div className="flex items-center justify-center gap-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setPage(p => Math.max(1, p - 1));
+                      window.scrollTo(0, 0);
+                    }}
+                    disabled={page === 1}
+                  >
+                    <ChevronLeft className="w-4 h-4 mr-2" /> Anterior
+                  </Button>
+                  <span className="text-sm font-medium">
+                    Página {page} de {meta.totalPages}
+                  </span>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setPage(p => Math.min(meta.totalPages, p + 1));
+                      window.scrollTo(0, 0);
+                    }}
+                    disabled={page === meta.totalPages}
+                  >
+                    Siguiente <ChevronRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </section>
