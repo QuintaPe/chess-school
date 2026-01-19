@@ -2,7 +2,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import {
     Play,
     Clock,
@@ -18,7 +17,7 @@ import {
 } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
-import { Course, Lesson } from "@/types/api";
+import { Course } from "@/types/api";
 import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -36,9 +35,9 @@ const StudentCourseDetail = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
-    const courseId = Number(id);
+    const courseId = id!;
 
-    const [activeLessonId, setActiveLessonId] = useState<number | null>(null);
+    const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
 
     const { data: course, isLoading, isError } = useQuery<Course>({
         queryKey: ["course", courseId],
@@ -46,12 +45,12 @@ const StudentCourseDetail = () => {
     });
 
     const completeMutation = useMutation({
-        mutationFn: (lessonId: number) => api.courses.completeLesson(lessonId),
+        mutationFn: (lessonId: string) => api.courses.completeLesson(lessonId),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["course", courseId] });
             toast.success("¡Lección completada!");
         },
-        onError: (error: any) => {
+        onError: (error: Error) => {
             toast.error(`Error: ${error.message}`);
         }
     });

@@ -10,7 +10,8 @@ import {
     CheckCircle2,
     TrendingUp,
     Flame,
-    Loader2
+    Loader2,
+    RotateCcw
 } from "lucide-react";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -212,18 +213,54 @@ const StudentPuzzles = () => {
                                         <Loader2 className="w-10 h-10 animate-spin text-primary" />
                                     </div>
                                 ) : dailyPuzzle ? (
-                                    <PuzzleSolver
-                                        puzzle={dailyPuzzle}
-                                        isDaily={true}
-                                        onSolve={(result) => {
-                                            solveMutation.mutate({
-                                                dailyPuzzleId: dailyPuzzle.dailyPuzzleId,
-                                                moves: result.moves,
-                                                solved: true,
-                                                timeSpent: result.timeSpent
-                                            });
-                                        }}
-                                    />
+                                    dailyPuzzle.userAttempt?.solved ? (
+                                        <div className="flex flex-col items-center justify-center space-y-6 text-center animate-in fade-in zoom-in duration-500">
+                                            <div className="w-24 h-24 rounded-full bg-green-500/10 flex items-center justify-center border-2 border-green-500/20 shadow-lg shadow-green-500/10">
+                                                <CheckCircle2 className="w-12 h-12 text-green-500" />
+                                            </div>
+                                            <div>
+                                                <h3 className="text-2xl font-serif font-bold text-foreground">¡Reto Diario Completado!</h3>
+                                                <p className="text-muted-foreground mt-2 max-w-sm mx-auto">
+                                                    Ya has resuelto el problema de hoy. Tu puntuación y tiempo han sido registrados en el ranking global. ¡Vuelve mañana para un nuevo desafío!
+                                                </p>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-4 w-full max-w-sm">
+                                                <div className="p-4 rounded-2xl bg-secondary/30 border border-border/50">
+                                                    <span className="block text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1">Intentos</span>
+                                                    <span className="text-2xl font-bold font-mono">{dailyPuzzle.userAttempt?.attempts || 1}</span>
+                                                </div>
+                                                <div className="p-4 rounded-2xl bg-secondary/30 border border-border/50">
+                                                    <span className="block text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1">Tiempo</span>
+                                                    <span className="text-2xl font-bold font-mono">{dailyPuzzle.userAttempt?.timeSpent || 0}s</span>
+                                                </div>
+                                            </div>
+                                            <div className="pt-4 flex gap-3">
+                                                <Button variant="hero" onClick={() => setActiveTab("history")}>
+                                                    Practicar Historial
+                                                </Button>
+                                                <Button variant="outline" onClick={() => {
+                                                    queryClient.invalidateQueries({ queryKey: ["daily-leaderboard"] });
+                                                    toast.success("Ranking actualizado");
+                                                }}>
+                                                    <RotateCcw className="w-4 h-4 mr-2" />
+                                                    Actualizar Ranking
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <PuzzleSolver
+                                            puzzle={dailyPuzzle}
+                                            isDaily={true}
+                                            onSolve={(result) => {
+                                                solveMutation.mutate({
+                                                    dailyPuzzleId: dailyPuzzle.dailyPuzzleId,
+                                                    moves: result.moves,
+                                                    solved: true,
+                                                    timeSpent: result.timeSpent
+                                                });
+                                            }}
+                                        />
+                                    )
                                 ) : (
                                     <div className="text-center py-20 text-muted-foreground">
                                         No hay problema diario disponible.
@@ -282,10 +319,6 @@ const StudentPuzzles = () => {
                                 </h3>
                                 {dailyPuzzle && (
                                     <div className="space-y-4">
-                                        <div className="flex justify-between items-center text-sm py-2 border-b border-primary/10">
-                                            <span className="text-muted-foreground">ID Interno</span>
-                                            <span className="font-mono font-bold">#{dailyPuzzle.dailyPuzzleId}</span>
-                                        </div>
                                         <div className="flex justify-between items-center text-sm py-2 border-b border-primary/10">
                                             <span className="text-muted-foreground">Estado</span>
                                             <Badge variant={dailyPuzzle.userAttempt?.solved ? "default" : "secondary"}>
@@ -366,7 +399,7 @@ const StudentPuzzles = () => {
                                     <div className="p-4 flex flex-col gap-3">
                                         <div className="flex justify-between items-start">
                                             <div>
-                                                <h3 className="font-bold text-foreground">Problema #{puzzle.id}</h3>
+                                                <h3 className="font-bold text-foreground">Problema</h3>
                                                 <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">
                                                     Juegan {puzzle.turn === 'w' ? 'Blancas' : 'Negras'}
                                                 </p>
@@ -430,7 +463,7 @@ const StudentPuzzles = () => {
                 <Dialog open={!!solvingPuzzle} onOpenChange={(open) => !open && setSolvingPuzzle(null)}>
                     <DialogContent className="sm:max-w-[500px] bg-card border-border">
                         <DialogHeader>
-                            <DialogTitle className="text-2xl font-serif">Resolviendo Problema #{solvingPuzzle?.id}</DialogTitle>
+                            <DialogTitle className="text-2xl font-serif">Resolviendo Problema</DialogTitle>
                         </DialogHeader>
                         <div className="py-4 flex justify-center">
                             {solvingPuzzle && (

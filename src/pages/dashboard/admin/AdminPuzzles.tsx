@@ -83,7 +83,7 @@ const AdminPuzzles = () => {
     });
 
     const updateMutation = useMutation({
-        mutationFn: ({ id, data }: { id: number, data: any }) => api.puzzles.update(id, data),
+        mutationFn: ({ id, data }: { id: string, data: any }) => api.puzzles.update(id, data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["admin-puzzles"] });
             toast.success("Problema actualizado");
@@ -93,7 +93,7 @@ const AdminPuzzles = () => {
     });
 
     const deleteMutation = useMutation({
-        mutationFn: (id: number) => api.puzzles.delete(id),
+        mutationFn: (id: string) => api.puzzles.delete(id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["admin-puzzles"] });
             toast.success("Problema eliminado");
@@ -194,7 +194,6 @@ const AdminPuzzles = () => {
                             <div className="p-4 space-y-3 text-sm flex-1 flex flex-col">
                                 <div className="flex justify-between items-start">
                                     <div className="flex flex-col gap-1">
-                                        <h3 className="font-semibold text-foreground">Problema #{puzzle.id}</h3>
                                         {puzzle.externalId && <span className="text-[10px] text-muted-foreground font-mono">{puzzle.externalId}</span>}
                                     </div>
                                     <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30">

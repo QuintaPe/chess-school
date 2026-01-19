@@ -1,6 +1,6 @@
 
 export interface User {
-    id: string | number;
+    id: string;
     email: string;
     name: string;
     role: 'student' | 'teacher' | 'admin';
@@ -46,7 +46,7 @@ export interface ClassItem {
 }
 
 export interface Puzzle {
-    id: number;
+    id: string;
     externalId?: string; // Original PuzzleId from CSV
     fen: string;
     solution: string[]; // UCI moves array
@@ -66,7 +66,7 @@ export interface PuzzleSolutionResponse {
 }
 
 export interface Course {
-    id: number;
+    id: string;
     title: string;
     description: string;
     thumbnail_url: string;
@@ -80,8 +80,8 @@ export interface Course {
 }
 
 export interface Lesson {
-    id: number;
-    course_id: number;
+    id: string;
+    course_id: string;
     title: string;
     description: string;
     video_url: string;
@@ -101,7 +101,7 @@ export interface PaginatedResponse<T> {
     };
 }
 export interface DailyPuzzle extends Puzzle {
-    dailyPuzzleId: number;
+    dailyPuzzleId: string;
     date: string;
     userAttempt?: {
         solved: boolean;
@@ -127,7 +127,7 @@ export interface DailyStats {
 
 export interface LeaderboardEntry {
     rank: number;
-    userId: number;
+    userId: string;
     userName: string;
     timeSpent: number;
     attempts: number;

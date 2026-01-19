@@ -34,7 +34,7 @@ export const api = {
         },
     },
     classes: {
-        list: async (params?: { level?: string; type?: string; groupId?: string | number }) => {
+        list: async (params?: { level?: string; type?: string; groupId?: string }) => {
             const url = new URL(`${BASE_URL}/classes`);
             if (params) {
                 Object.entries(params).forEach(([key, value]) => {
@@ -46,12 +46,12 @@ export const api = {
             return res.json();
         },
         // ... (rest of classes methods)
-        get: async (id: string | number) => {
+        get: async (id: string) => {
             const res = await fetch(`${BASE_URL}/classes/${id}`, { headers: getHeaders() });
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
-        register: async (id: string | number) => {
+        register: async (id: string) => {
             const res = await fetch(`${BASE_URL}/classes/${id}/register`, {
                 method: 'POST',
                 headers: getHeaders(),
@@ -68,7 +68,7 @@ export const api = {
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
-        update: async (id: string | number, data: any) => {
+        update: async (id: string, data: any) => {
             const res = await fetch(`${BASE_URL}/classes/${id}`, {
                 method: 'PUT',
                 headers: getHeaders(),
@@ -92,7 +92,7 @@ export const api = {
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
-        dailyAttempt: async (data: { dailyPuzzleId: number; moves: string[]; solved: boolean; timeSpent: number }) => {
+        dailyAttempt: async (data: { dailyPuzzleId: string; moves: string[]; solved: boolean; timeSpent: number }) => {
             const res = await fetch(`${BASE_URL}/puzzles/daily/attempt`, {
                 method: 'POST',
                 headers: getHeaders(),
@@ -113,7 +113,7 @@ export const api = {
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
-        solve: async (puzzleId: number, solution: string) => {
+        solve: async (puzzleId: string, solution: string) => {
             const res = await fetch(`${BASE_URL}/puzzles/solve`, {
                 method: 'POST',
                 headers: getHeaders(),
@@ -148,7 +148,7 @@ export const api = {
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
-        update: async (id: number, data: any) => {
+        update: async (id: string, data: any) => {
             const res = await fetch(`${BASE_URL}/puzzles/${id}`, {
                 method: 'PUT',
                 headers: getHeaders(),
@@ -157,7 +157,7 @@ export const api = {
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
-        delete: async (id: number) => {
+        delete: async (id: string) => {
             const res = await fetch(`${BASE_URL}/puzzles/${id}`, {
                 method: 'DELETE',
                 headers: getHeaders(),
@@ -181,7 +181,7 @@ export const api = {
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
-        get: async (id: number) => {
+        get: async (id: string | number) => {
             const res = await fetch(`${BASE_URL}/courses/${id}`, { headers: getHeaders() });
             if (!res.ok) throw new Error(await res.text());
             return res.json();
@@ -195,7 +195,7 @@ export const api = {
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
-        addLesson: async (courseId: number, data: any) => {
+        addLesson: async (courseId: string, data: any) => {
             const res = await fetch(`${BASE_URL}/courses/${courseId}/lessons`, {
                 method: 'POST',
                 headers: getHeaders(),
@@ -204,7 +204,7 @@ export const api = {
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
-        enroll: async (courseId: number) => {
+        enroll: async (courseId: string) => {
             const res = await fetch(`${BASE_URL}/courses/${courseId}/enroll`, {
                 method: 'POST',
                 headers: getHeaders(),
@@ -212,7 +212,7 @@ export const api = {
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
-        update: async (id: number, data: any) => {
+        update: async (id: string | number, data: any) => {
             const res = await fetch(`${BASE_URL}/courses/${id}`, {
                 method: 'PUT',
                 headers: getHeaders(),
@@ -221,7 +221,7 @@ export const api = {
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
-        updateLesson: async (lessonId: number, data: any) => {
+        updateLesson: async (lessonId: string, data: any) => {
             const res = await fetch(`${BASE_URL}/courses/lessons/${lessonId}`, {
                 method: 'PUT',
                 headers: getHeaders(),
@@ -230,7 +230,7 @@ export const api = {
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
-        completeLesson: async (lessonId: number) => {
+        completeLesson: async (lessonId: string) => {
             const res = await fetch(`${BASE_URL}/courses/lessons/${lessonId}/complete`, {
                 method: 'POST',
                 headers: getHeaders(),
@@ -238,7 +238,7 @@ export const api = {
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
-        deleteLesson: async (lessonId: number) => {
+        deleteLesson: async (lessonId: string) => {
             const res = await fetch(`${BASE_URL}/courses/lessons/${lessonId}`, {
                 method: 'DELETE',
                 headers: getHeaders(),
@@ -246,7 +246,7 @@ export const api = {
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
-        delete: async (id: number) => {
+        delete: async (id: string | number) => {
             const res = await fetch(`${BASE_URL}/courses/${id}`, {
                 method: 'DELETE',
                 headers: getHeaders(),
@@ -339,7 +339,7 @@ export const api = {
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
-        delete: async (id: number) => {
+        delete: async (id: string) => {
             const res = await fetch(`${BASE_URL}/materials/${id}`, {
                 method: 'DELETE',
                 headers: getHeaders(),
@@ -361,7 +361,7 @@ export const api = {
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
-        create: async (data: { name: string; description: string; teacher_id: string | number }) => {
+        create: async (data: { name: string; description: string; teacher_id: string }) => {
             const res = await fetch(`${BASE_URL}/student-groups`, {
                 method: 'POST',
                 headers: getHeaders(),
@@ -370,14 +370,14 @@ export const api = {
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
-        getMembers: async (groupId: string | number) => {
+        getMembers: async (groupId: string) => {
             const res = await fetch(`${BASE_URL}/student-groups/${groupId}/members`, {
                 headers: getHeaders()
             });
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
-        addMember: async (groupId: string | number, userId: string | number) => {
+        addMember: async (groupId: string, userId: string) => {
             const res = await fetch(`${BASE_URL}/student-groups/${groupId}/members`, {
                 method: 'POST',
                 headers: getHeaders(),
@@ -386,7 +386,7 @@ export const api = {
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
-        removeMember: async (groupId: string | number, userId: string | number) => {
+        removeMember: async (groupId: string, userId: string) => {
             const res = await fetch(`${BASE_URL}/student-groups/${groupId}/members/${userId}`, {
                 method: 'DELETE',
                 headers: getHeaders(),

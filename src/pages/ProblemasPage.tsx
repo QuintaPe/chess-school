@@ -213,9 +213,6 @@ const ProblemasPage = () => {
                         </Badge>
                       ))}
                     </div>
-                    <p className="font-medium text-foreground text-sm line-clamp-1">
-                      Problema #{problem.id}
-                    </p>
                     <div className="flex items-center justify-between text-xs text-muted-foreground mt-1">
                       <span>{problem.solution?.length} movimientos</span>
                       {problem.nbPlays > 0 && <span className="text-[10px] opacity-70 italic">{problem.nbPlays.toLocaleString()} vistas</span>}
