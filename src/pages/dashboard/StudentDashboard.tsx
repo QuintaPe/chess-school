@@ -10,20 +10,37 @@ import {
   Play,
   Trophy,
   Flame,
-  Loader2
+  Loader2,
+  Medal,
+  Star
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { DiscordWidget } from "@/components/layout/DiscordWidget";
+import { AchievementBadge } from "@/components/chess/AchievementBadge";
+
+import { DailyPuzzle, DailyStats, Achievement } from "@/types/api";
 
 const StudentDashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
-  const { data: dailyPuzzle, isLoading: isLoadingPuzzle } = useQuery({
+  const { data: dailyPuzzle, isLoading: isLoadingPuzzle } = useQuery<DailyPuzzle>({
     queryKey: ["daily-puzzle"],
     queryFn: () => api.puzzles.daily(),
+  });
+
+  const { data: dailyStats } = useQuery<DailyStats>({
+    queryKey: ["daily-stats"],
+    queryFn: () => api.puzzles.dailyStats(),
+  });
+
+  const { data: generalStats } = useQuery({
+    queryKey: ["student-stats"],
+    queryFn: () => api.users.getStats(),
   });
 
   const { data: classes, isLoading: isLoadingClasses } = useQuery<any[]>({
@@ -31,7 +48,13 @@ const StudentDashboard = () => {
     queryFn: () => api.classes.list(),
   });
 
+  const { data: achievements } = useQuery<Achievement[]>({
+    queryKey: ["achievements"],
+    queryFn: () => api.achievements.list(),
+  });
+
   const upcomingClasses = classes?.filter(c => new Date(c.start_time) > new Date()).slice(0, 3) || [];
+  const recentAchievements = achievements?.filter(a => a.isUnlocked).slice(0, 4) || [];
 
   return (
     <DashboardLayout role="student">
@@ -54,51 +77,50 @@ const StudentDashboard = () => {
           </Link>
         </div>
 
-        {/* Stats cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="p-5 bg-card border-border hover:border-primary/30 transition-colors">
+          <Card className="p-5 bg-card border-border hover:border-primary/30 transition-colors border-b-primary border-b-2">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
                 <Flame className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-foreground">--</p>
+                <p className="text-2xl font-bold text-foreground">{dailyStats?.currentStreak || 0}</p>
                 <p className="text-sm text-muted-foreground">Días de racha</p>
               </div>
             </div>
           </Card>
 
-          <Card className="p-5 bg-card border-border hover:border-primary/30 transition-colors">
+          <Card className="p-5 bg-card border-border hover:border-primary/30 transition-colors border-b-accent border-b-2">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
                 <Target className="w-6 h-6 text-accent" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-foreground">--</p>
+                <p className="text-2xl font-bold text-foreground">{dailyStats?.totalSolved || generalStats?.totalPuzzles || 0}</p>
                 <p className="text-sm text-muted-foreground">Problemas resueltos</p>
               </div>
             </div>
           </Card>
 
-          <Card className="p-5 bg-card border-border hover:border-primary/30 transition-colors">
+          <Card className="p-5 bg-card border-border hover:border-primary/30 transition-colors border-b-blue-500 border-b-2">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
                 <BookOpen className="w-6 h-6 text-blue-500" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-foreground">--</p>
+                <p className="text-2xl font-bold text-foreground">{generalStats?.completedLessons || 0}</p>
                 <p className="text-sm text-muted-foreground">Lecciones completadas</p>
               </div>
             </div>
           </Card>
 
-          <Card className="p-5 bg-card border-border hover:border-primary/30 transition-colors">
+          <Card className="p-5 bg-card border-border hover:border-primary/30 transition-colors border-b-purple-500 border-b-2">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center">
                 <TrendingUp className="w-6 h-6 text-purple-500" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-foreground">--%</p>
+                <p className="text-2xl font-bold text-foreground">{dailyStats?.solveRate || generalStats?.accuracy || 0}%</p>
                 <p className="text-sm text-muted-foreground">Precisión media</p>
               </div>
             </div>
@@ -132,13 +154,22 @@ const StudentDashboard = () => {
               </div>
             ) : dailyPuzzle ? (
               <div className="flex flex-col lg:flex-row items-center gap-6">
-                <ChessBoard
-                  fen={dailyPuzzle.fen}
-                  size="md"
-                  interactive={true}
-                  className="shrink-0"
-                  flipped={(dailyPuzzle.turn || dailyPuzzle.fen.split(' ')[1]) === 'w'}
-                />
+                <div className="shrink-0 relative">
+                  <ChessBoard
+                    fen={dailyPuzzle.fen}
+                    size="md"
+                    interactive={false}
+                    className="opacity-90 group-hover:opacity-100 transition-opacity"
+                    flipped={(dailyPuzzle.turn || dailyPuzzle.fen.split(' ')[1]) === 'w'}
+                  />
+                  {dailyPuzzle.userAttempt?.solved && (
+                    <div className="absolute inset-0 bg-green-500/10 backdrop-blur-[1px] flex items-center justify-center rounded-lg">
+                      <Badge className="bg-green-500 text-white border-none shadow-lg scale-110">
+                        ¡Resuelto!
+                      </Badge>
+                    </div>
+                  )}
+                </div>
                 <div className="flex-1 space-y-4">
                   <div className="p-4 rounded-xl bg-secondary/50 border border-border">
                     <p className="text-foreground font-medium mb-2">Objetivo:</p>
@@ -148,11 +179,12 @@ const StudentDashboard = () => {
                     </p>
                   </div>
                   <div className="flex gap-3">
-                    <Button variant="hero" className="flex-1">
-                      Resolver
-                    </Button>
-                    <Button variant="outline">
-                      Ver Pista
+                    <Button
+                      variant="hero"
+                      className="flex-1"
+                      onClick={() => navigate('/dashboard/problemas')}
+                    >
+                      {dailyPuzzle.userAttempt?.solved ? 'Ver de nuevo' : 'Resolver ahora'}
                     </Button>
                   </div>
                 </div>
@@ -181,11 +213,12 @@ const StudentDashboard = () => {
                 upcomingClasses.map((clase) => (
                   <div
                     key={clase.id}
-                    className="p-4 rounded-xl bg-secondary/50 border border-border hover:border-primary/30 transition-colors cursor-pointer"
+                    className="p-4 rounded-xl bg-secondary/50 border border-border hover:border-primary/30 transition-colors cursor-pointer group"
+                    onClick={() => navigate(`/clases/${clase.id}/live`)}
                   >
                     <div className="flex items-start justify-between">
                       <div>
-                        <p className="font-medium text-foreground">{clase.title}</p>
+                        <p className="font-medium text-foreground group-hover:text-primary transition-colors">{clase.title}</p>
                         <div className="flex items-center gap-2 mt-1">
                           <Clock className="w-4 h-4 text-muted-foreground" />
                           <span className="text-sm text-muted-foreground">
@@ -209,19 +242,44 @@ const StudentDashboard = () => {
               </Button>
             </Link>
           </Card>
+
+          <DiscordWidget />
         </div>
 
-        {/* Recent activity placeholder */}
+        {/* Achievements Preview */}
         <Card className="p-6 bg-card border-border">
-          <h2 className="text-xl font-serif font-semibold text-foreground mb-4">
-            Tu Actividad Reciente
-          </h2>
-          <div className="flex items-center justify-center h-24 text-muted-foreground italic">
-            Próximamente: Registraremos tu progreso aquí
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-serif font-semibold text-foreground flex items-center gap-2">
+              <Star className="w-5 h-5 text-yellow-500" />
+              Tus Medallas Recientes
+            </h2>
+            <Link to="/dashboard/logros" className="text-sm text-primary hover:underline flex items-center gap-1">
+              Ver todas <Medal className="w-4 h-4" />
+            </Link>
           </div>
+
+          {recentAchievements.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {recentAchievements.map((achievement) => (
+                <div key={achievement.id} className="flex flex-col items-center gap-2">
+                  <AchievementBadge achievement={achievement} size="md" />
+                  <span className="text-xs font-medium text-center">{achievement.name}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-8 text-center space-y-3">
+              <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
+                <Medal className="w-6 h-6 text-muted-foreground" />
+              </div>
+              <p className="text-sm text-muted-foreground italic">
+                Aún no has desbloqueado medallas. ¡Resuelve el puzzle de hoy para empezar!
+              </p>
+            </div>
+          )}
         </Card>
       </div>
-    </DashboardLayout>
+    </DashboardLayout >
   );
 };
 

@@ -1,10 +1,11 @@
 
 export interface User {
-    id: number;
+    id: string | number;
     email: string;
     name: string;
     role: 'student' | 'teacher' | 'admin';
     subscription_plan: 'free' | 'premium';
+    discord_id?: string;
 }
 
 export interface AuthResponse {
@@ -12,19 +13,36 @@ export interface AuthResponse {
     user: User;
 }
 
-export interface ClassItem {
-    id: number;
-    title: string;
+export interface StudentGroup {
+    id: string;
+    name: string;
     description: string;
-    start_time: string; // ISO Date
-    duration: number; // minutos
+    teacher_id: string;
+    teacher_name: string;
+    student_count: number;
+    created_at: string;
+}
+
+export interface GroupMember {
+    id: string;
+    name: string;
+    email: string;
+    avatar_url: string | null;
+}
+
+export interface ClassItem {
+    id: string;
+    title: string;
     level: 'beginner' | 'intermediate' | 'advanced';
-    status: 'scheduled' | 'live' | 'completed';
-    type: 'live' | 'recorded';
-    video_url: string;
-    capacity?: number;
-    teacher_id?: number;
-    isRegistered?: boolean; // Booleano devuelto en el detalle si está autenticado
+    start_time: string;
+    teacher_id?: string | null;
+    teacher_name?: string;
+    group_id?: string | null;
+    group_name?: string;
+    status: 'scheduled' | 'live' | 'completed' | 'canceled';
+    meeting_link?: string;
+    video_url?: string;
+    recurring_days?: number[];
 }
 
 export interface Puzzle {
@@ -81,4 +99,55 @@ export interface PaginatedResponse<T> {
         limit: number;
         totalPages: number;
     };
+}
+export interface DailyPuzzle extends Puzzle {
+    dailyPuzzleId: number;
+    date: string;
+    userAttempt?: {
+        solved: boolean;
+        attempts: number;
+        timeSpent: number;
+    };
+}
+
+export interface DailyStats {
+    totalAttempted: number;
+    totalSolved: number;
+    currentStreak: number;
+    longestStreak: number;
+    averageAttempts: number;
+    averageTime: number;
+    solveRate: number;
+    recentPuzzles: {
+        date: string;
+        solved: boolean;
+        attempts: number;
+    }[];
+}
+
+export interface LeaderboardEntry {
+    rank: number;
+    userId: number;
+    userName: string;
+    timeSpent: number;
+    attempts: number;
+    completedAt: string;
+}
+
+export interface DailyLeaderboard {
+    date: string;
+    leaderboard: LeaderboardEntry[];
+    totalSolved: number;
+    totalAttempted: number;
+}
+export interface Achievement {
+    id: string;
+    name: string;
+    description: string;
+    icon_url: string | null;
+    criteria_type: string;
+    criteria_value: number;
+    unlocked_at?: string;
+    isUnlocked: boolean;
+    progress?: number;
 }

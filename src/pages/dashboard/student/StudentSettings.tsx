@@ -18,6 +18,9 @@ import {
     Shield,
     Trash2,
     Save,
+    MessageSquare,
+    CheckCircle2,
+    XCircle
 } from "lucide-react";
 import {
     Select,
@@ -280,6 +283,56 @@ const StudentSettings = () => {
                                 <Save className="w-4 h-4 mr-2" />
                                 Guardar Preferencias
                             </Button>
+                        </div>
+                    </div>
+                </Card>
+
+                {/* Discord Integration */}
+                <Card className="p-6 bg-[#5865F2]/5 border-[#5865F2]/20 relative overflow-hidden">
+                    <div className="absolute -right-4 -top-4 w-24 h-24 bg-[#5865F2]/10 rounded-full blur-2xl" />
+
+                    <div className="flex items-center gap-3 mb-6 relative z-10">
+                        <div className="w-10 h-10 rounded-xl bg-[#5865F2] flex items-center justify-center shadow-lg shadow-[#5865F2]/20">
+                            <MessageSquare className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-serif font-semibold text-foreground">
+                                Integración con Discord
+                            </h2>
+                            <p className="text-sm text-muted-foreground">
+                                Vincula tu cuenta para acceder a los canales exclusivos
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="space-y-4 relative z-10">
+                        <div className="flex flex-col md:flex-row items-center justify-between p-4 rounded-lg bg-background/50 border border-[#5865F2]/30 gap-4">
+                            <div className="flex-1">
+                                <p className="font-medium text-foreground flex items-center gap-2">
+                                    Estado: {user?.discord_id ? (
+                                        <span className="text-green-500 flex items-center gap-1 text-sm font-bold">
+                                            <CheckCircle2 className="w-4 h-4" /> Vinculado
+                                        </span>
+                                    ) : (
+                                        <span className="text-muted-foreground flex items-center gap-1 text-sm font-bold">
+                                            <XCircle className="w-4 h-4" /> Sin vincular
+                                        </span>
+                                    )}
+                                </p>
+                                <p className="text-xs text-muted-foreground mt-1">
+                                    Al vincular tu cuenta, obtendrás automáticamente los roles de acuerdo a tu plan de suscripción en nuestro servidor oficial.
+                                </p>
+                            </div>
+                            {user?.discord_id ? (
+                                <Button variant="outline" className="border-destructive/50 text-destructive hover:bg-destructive/10">
+                                    Desvincular Discord
+                                </Button>
+                            ) : (
+                                <Button className="bg-[#5865F2] hover:bg-[#4752C4] text-white border-none shadow-md shadow-[#5865F2]/20">
+                                    <MessageSquare className="w-4 h-4 mr-2" />
+                                    Vincular con Discord
+                                </Button>
+                            )}
                         </div>
                     </div>
                 </Card>

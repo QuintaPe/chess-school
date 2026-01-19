@@ -30,7 +30,7 @@ import { api } from "@/lib/api";
 const AdminStats = () => {
     const { data: students, isLoading: loadingStudents } = useQuery<any[]>({
         queryKey: ["admin-students"],
-        queryFn: () => api.users.list("student"),
+        queryFn: () => api.admin.getUsers({ role: "student" }),
     });
 
     const { data: courses, isLoading: loadingCourses } = useQuery<any[]>({

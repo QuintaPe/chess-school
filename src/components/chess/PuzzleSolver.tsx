@@ -5,20 +5,30 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Lightbulb, RotateCcw, CheckCircle2, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { api } from "@/lib/api";
 
-import { Puzzle } from "@/types/api";
+import { Puzzle, DailyPuzzle } from "@/types/api";
 
 interface PuzzleSolverProps {
-    puzzle: Puzzle;
-    onSolve?: () => void;
+    puzzle: Puzzle | DailyPuzzle;
+    onSolve?: (result: { moves: string[], timeSpent: number }) => void;
+    isDaily?: boolean;
 }
 
-export const PuzzleSolver = ({ puzzle, onSolve }: PuzzleSolverProps) => {
+interface SolveResult {
+    ratingDelta: number;
+    newRating: number;
+    eloGained?: number;
+}
+
+export const PuzzleSolver = ({ puzzle, onSolve, isDaily }: PuzzleSolverProps) => {
     const [game, setGame] = useState(new Chess(puzzle.fen));
     const [moveIndex, setMoveIndex] = useState(0);
     const [selectedSquare, setSelectedSquare] = useState<Square | null>(null);
     const [status, setStatus] = useState<'playing' | 'failed' | 'solved'>('playing');
     const [lastMove, setLastMove] = useState<Move | null>(null);
+    const [solveResult, setSolveResult] = useState<SolveResult | null>(null);
+    const [startTime] = useState(Date.now());
 
     const playOpponentMove = (currentGame: Chess, nextIdx: number) => {
         if (nextIdx >= puzzle.solution.length) return;
@@ -33,7 +43,8 @@ export const PuzzleSolver = ({ puzzle, onSolve }: PuzzleSolverProps) => {
 
                 if (nextIdx + 1 >= puzzle.solution.length) {
                     setStatus('solved');
-                    onSolve?.();
+                    const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+                    onSolve?.({ moves: puzzle.solution, timeSpent });
                 }
             }
         }, 600);
@@ -47,6 +58,7 @@ export const PuzzleSolver = ({ puzzle, onSolve }: PuzzleSolverProps) => {
         setSelectedSquare(null);
         setStatus('playing');
         setLastMove(null);
+        setSolveResult(null);
 
         if (puzzle.solution.length > 0) {
             playOpponentMove(initialGame, 0);
@@ -55,7 +67,7 @@ export const PuzzleSolver = ({ puzzle, onSolve }: PuzzleSolverProps) => {
 
     const studentColor = puzzle.turn === 'w' ? 'b' : 'w';
 
-    const handleSquareClick = (square: string) => {
+    const handleSquareClick = async (square: string) => {
         if (status !== 'playing') return;
         const sq = square as Square;
 
@@ -86,8 +98,23 @@ export const PuzzleSolver = ({ puzzle, onSolve }: PuzzleSolverProps) => {
 
                         if (nextIdx >= puzzle.solution.length) {
                             setStatus('solved');
-                            toast.success("¡Excelente! Problema resuelto.");
-                            onSolve?.();
+                            const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+
+                            if (!isDaily) {
+                                try {
+                                    const result = await api.puzzles.solve(puzzle.id, puzzle.solution.join(' '));
+                                    setSolveResult({
+                                        ratingDelta: result.ratingDelta,
+                                        newRating: result.newRating
+                                    });
+                                    toast.success(`¡Problema resuelto! ${result.ratingDelta >= 0 ? '+' : ''}${result.ratingDelta} pts`);
+                                } catch (error) {
+                                    console.error('Error saving progress:', error);
+                                    toast.success("¡Excelente! Problema resuelto.");
+                                }
+                            }
+
+                            onSolve?.({ moves: puzzle.solution, timeSpent });
                         } else {
                             playOpponentMove(newGame, nextIdx);
                         }
@@ -95,6 +122,21 @@ export const PuzzleSolver = ({ puzzle, onSolve }: PuzzleSolverProps) => {
                         setStatus('failed');
                         toast.error("Movimiento incorrecto. Inténtalo de nuevo.");
                         setSelectedSquare(null);
+
+                        if (isDaily) {
+                            const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+                            const dailyPuzzle = puzzle as DailyPuzzle;
+                            try {
+                                await api.puzzles.dailyAttempt({
+                                    dailyPuzzleId: dailyPuzzle.dailyPuzzleId,
+                                    moves: puzzle.solution.slice(0, moveIndex),
+                                    solved: false,
+                                    timeSpent
+                                });
+                            } catch (error) {
+                                console.error('Error reporting attempt:', error);
+                            }
+                        }
                     }
                 } else {
                     const piece = game.get(sq);
@@ -159,9 +201,19 @@ export const PuzzleSolver = ({ puzzle, onSolve }: PuzzleSolverProps) => {
 
                 {status === 'solved' && (
                     <div className="absolute inset-0 z-40 bg-green-500/20 backdrop-blur-[2px] flex items-center justify-center rounded-lg animate-fade-in">
-                        <div className="bg-background/90 p-4 rounded-2xl shadow-2xl border border-green-500/50 flex flex-col items-center gap-2">
+                        <div className="bg-background/90 p-4 rounded-2xl shadow-2xl border border-green-500/50 flex flex-col items-center gap-2 min-w-[200px]">
                             <CheckCircle2 className="w-12 h-12 text-green-500" />
                             <span className="font-bold text-lg text-foreground">¡Completado!</span>
+                            {solveResult && (
+                                <div className="flex flex-col items-center animate-in slide-in-from-bottom-2 fade-in duration-500">
+                                    <span className={cn("text-2xl font-black", solveResult.ratingDelta >= 0 ? "text-green-500" : "text-red-500")}>
+                                        {solveResult.ratingDelta > 0 ? '+' : ''}{solveResult.ratingDelta}
+                                    </span>
+                                    <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">
+                                        Nuevo ELO: {solveResult.newRating}
+                                    </span>
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}

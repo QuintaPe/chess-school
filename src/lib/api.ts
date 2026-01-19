@@ -34,23 +34,24 @@ export const api = {
         },
     },
     classes: {
-        list: async (params?: { level?: string; type?: string }) => {
+        list: async (params?: { level?: string; type?: string; groupId?: string | number }) => {
             const url = new URL(`${BASE_URL}/classes`);
             if (params) {
                 Object.entries(params).forEach(([key, value]) => {
-                    if (value) url.searchParams.append(key, value);
+                    if (value !== undefined && value !== null) url.searchParams.append(key, value.toString());
                 });
             }
             const res = await fetch(url.toString(), { headers: getHeaders() });
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
-        get: async (id: number) => {
+        // ... (rest of classes methods)
+        get: async (id: string | number) => {
             const res = await fetch(`${BASE_URL}/classes/${id}`, { headers: getHeaders() });
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
-        register: async (id: number) => {
+        register: async (id: string | number) => {
             const res = await fetch(`${BASE_URL}/classes/${id}/register`, {
                 method: 'POST',
                 headers: getHeaders(),
@@ -67,7 +68,7 @@ export const api = {
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
-        update: async (id: number, data: any) => {
+        update: async (id: string | number, data: any) => {
             const res = await fetch(`${BASE_URL}/classes/${id}`, {
                 method: 'PUT',
                 headers: getHeaders(),
@@ -76,7 +77,7 @@ export const api = {
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
-        delete: async (id: number) => {
+        delete: async (id: string | number) => {
             const res = await fetch(`${BASE_URL}/classes/${id}`, {
                 method: 'DELETE',
                 headers: getHeaders(),
@@ -91,6 +92,27 @@ export const api = {
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
+        dailyAttempt: async (data: { dailyPuzzleId: number; moves: string[]; solved: boolean; timeSpent: number }) => {
+            const res = await fetch(`${BASE_URL}/puzzles/daily/attempt`, {
+                method: 'POST',
+                headers: getHeaders(),
+                body: JSON.stringify(data),
+            });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        },
+        dailyStats: async () => {
+            const res = await fetch(`${BASE_URL}/puzzles/daily/stats`, { headers: getHeaders() });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        },
+        dailyLeaderboard: async (date?: string) => {
+            const url = new URL(`${BASE_URL}/puzzles/daily/leaderboard`);
+            if (date) url.searchParams.append('date', date);
+            const res = await fetch(url.toString(), { headers: getHeaders() });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        },
         solve: async (puzzleId: number, solution: string) => {
             const res = await fetch(`${BASE_URL}/puzzles/solve`, {
                 method: 'POST',
@@ -100,7 +122,7 @@ export const api = {
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         },
-        list: async (params?: { page?: number; limit?: number; ratingMin?: number; ratingMax?: number; tags?: string[] }) => {
+        list: async (params?: { page?: number; limit?: number; ratingMin?: number; ratingMax?: number; tags?: string[]; sort?: string; order?: 'asc' | 'desc' }) => {
             const url = new URL(`${BASE_URL}/puzzles`);
             if (params) {
                 Object.entries(params).forEach(([key, value]) => {
@@ -269,6 +291,39 @@ export const api = {
             return res.json();
         },
     },
+    admin: {
+        getUsers: async (filters: { role?: string; search?: string } = {}) => {
+            const url = new URL(`${BASE_URL}/auth/users`);
+            Object.entries(filters).forEach(([key, value]) => {
+                if (value) url.searchParams.append(key, value);
+            });
+            const res = await fetch(url.toString(), { headers: getHeaders() });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        },
+        updateUser: async (id: string, data: any) => {
+            const res = await fetch(`${BASE_URL}/auth/users/${id}`, {
+                method: 'PATCH',
+                headers: getHeaders(),
+                body: JSON.stringify(data),
+            });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        },
+        deleteUser: async (id: string) => {
+            const res = await fetch(`${BASE_URL}/auth/users/${id}`, {
+                method: 'DELETE',
+                headers: getHeaders(),
+            });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        },
+        getDashboardStats: async () => {
+            const res = await fetch(`${BASE_URL}/admin/stats`, { headers: getHeaders() });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        },
+    },
     materials: {
         list: async () => {
             const res = await fetch(`${BASE_URL}/materials`, { headers: getHeaders() });
@@ -286,6 +341,53 @@ export const api = {
         },
         delete: async (id: number) => {
             const res = await fetch(`${BASE_URL}/materials/${id}`, {
+                method: 'DELETE',
+                headers: getHeaders(),
+            });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        },
+    },
+    achievements: {
+        list: async () => {
+            const res = await fetch(`${BASE_URL}/achievements`, { headers: getHeaders() });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        },
+    },
+    studentGroups: {
+        list: async () => {
+            const res = await fetch(`${BASE_URL}/student-groups`, { headers: getHeaders() });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        },
+        create: async (data: { name: string; description: string; teacher_id: string | number }) => {
+            const res = await fetch(`${BASE_URL}/student-groups`, {
+                method: 'POST',
+                headers: getHeaders(),
+                body: JSON.stringify(data),
+            });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        },
+        getMembers: async (groupId: string | number) => {
+            const res = await fetch(`${BASE_URL}/student-groups/${groupId}/members`, {
+                headers: getHeaders()
+            });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        },
+        addMember: async (groupId: string | number, userId: string | number) => {
+            const res = await fetch(`${BASE_URL}/student-groups/${groupId}/members`, {
+                method: 'POST',
+                headers: getHeaders(),
+                body: JSON.stringify({ userId }),
+            });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        },
+        removeMember: async (groupId: string | number, userId: string | number) => {
+            const res = await fetch(`${BASE_URL}/student-groups/${groupId}/members/${userId}`, {
                 method: 'DELETE',
                 headers: getHeaders(),
             });

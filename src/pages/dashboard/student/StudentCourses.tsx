@@ -199,7 +199,7 @@ const StudentCourses = () => {
                                                         <Button
                                                             variant="hero"
                                                             className="flex-1"
-                                                            onClick={() => navigate(`/dashboard/cursos/${course.id}`)}
+                                                            onClick={() => navigate(`/cursos/${course.id}`)}
                                                         >
                                                             <Play className="w-4 h-4 mr-2" />
                                                             Continuar Curso
@@ -207,7 +207,7 @@ const StudentCourses = () => {
                                                         <Button
                                                             variant="outline"
                                                             className="flex-1"
-                                                            onClick={() => navigate(`/dashboard/cursos/${course.id}`)}
+                                                            onClick={() => navigate(`/cursos/${course.id}`)}
                                                         >
                                                             Ver Contenido
                                                         </Button>
@@ -255,7 +255,7 @@ const StudentCourses = () => {
                                                         variant="ghost"
                                                         size="sm"
                                                         className="h-8 text-xs hover:bg-green-500/10 hover:text-green-500 border border-transparent hover:border-green-500/20 transition-all"
-                                                        onClick={() => navigate(`/dashboard/cursos/${course.id}`)}
+                                                        onClick={() => navigate(`/cursos/${course.id}`)}
                                                     >
                                                         Repasar Contenido
                                                     </Button>

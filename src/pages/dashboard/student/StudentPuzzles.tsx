@@ -23,8 +23,10 @@ import {
     DialogDescription,
 } from "@/components/ui/dialog";
 import { ChessBoard } from "@/components/chess/ChessBoard";
-import { Puzzle, PaginatedResponse } from "@/types/api";
-import { ChevronLeft, ChevronRight as ChevronRightIcon } from "lucide-react";
+import { Puzzle, PaginatedResponse, DailyPuzzle, DailyStats, DailyLeaderboard } from "@/types/api";
+import { ChevronLeft, ChevronRight as ChevronRightIcon, Clock, Percent, ListOrdered, Calendar } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 const StudentPuzzles = () => {
     const [activeTab, setActiveTab] = useState<"daily" | "history">("daily");
@@ -33,14 +35,56 @@ const StudentPuzzles = () => {
     const [page, setPage] = useState(1);
     const limit = 9;
 
-    const { data: dailyPuzzle, isLoading: isLoadingDaily } = useQuery({
+    const queryClient = useQueryClient();
+
+    const { data: dailyPuzzle, isLoading: isLoadingDaily } = useQuery<DailyPuzzle>({
         queryKey: ["daily-puzzle"],
         queryFn: () => api.puzzles.daily(),
     });
 
+    const { data: dailyStats, isLoading: isLoadingStats } = useQuery<DailyStats>({
+        queryKey: ["daily-stats"],
+        queryFn: () => api.puzzles.dailyStats(),
+    });
+
+    const { data: leaderboardData, isLoading: isLoadingLeaderboard } = useQuery<DailyLeaderboard>({
+        queryKey: ["daily-leaderboard"],
+        queryFn: () => api.puzzles.dailyLeaderboard(),
+    });
+
+    const solveMutation = useMutation({
+        mutationFn: (data: { dailyPuzzleId: number; moves: string[]; solved: boolean; timeSpent: number }) =>
+            api.puzzles.dailyAttempt(data),
+        onSuccess: (data) => {
+            if (data.solved) {
+                toast.success(data.message || "¡Felicidades! Has resuelto el puzzle del día", {
+                    description: data.eloGained ? `Has ganado ${data.eloGained} puntos de ELO` : undefined
+                });
+            }
+
+            if (data.newAchievements && data.newAchievements.length > 0) {
+                data.newAchievements.forEach((id: string) => {
+                    toast.success("¡Nuevo Logro Desbloqueado! 🏆", {
+                        description: `Has obtenido una nueva medalla. Revisa tu perfil.`,
+                        duration: 6000,
+                    });
+                });
+                queryClient.invalidateQueries({ queryKey: ["achievements"] });
+            }
+
+            queryClient.invalidateQueries({ queryKey: ["daily-puzzle"] });
+            queryClient.invalidateQueries({ queryKey: ["daily-stats"] });
+            queryClient.invalidateQueries({ queryKey: ["daily-leaderboard"] });
+        },
+        onError: (error) => {
+            toast.error("Error al registrar el intento");
+            console.error(error);
+        }
+    });
+
     const { data: puzzlesData, isLoading: isLoadingHistory } = useQuery<PaginatedResponse<Puzzle>>({
         queryKey: ["student-puzzles", page],
-        queryFn: () => api.puzzles.list({ page, limit }),
+        queryFn: () => api.puzzles.list({ page, limit, sort: 'rating', order: 'asc' }),
     });
 
     const puzzleHistory = puzzlesData?.data || [];
@@ -69,6 +113,8 @@ const StudentPuzzles = () => {
         accuracy: 0,
         points: 0
     };
+
+    const userRating = statsData?.rating || 1200;
 
     return (
         <DashboardLayout role="student">
@@ -103,8 +149,8 @@ const StudentPuzzles = () => {
                                 <Flame className="w-6 h-6 text-accent" />
                             </div>
                             <div>
-                                <p className="text-2xl font-bold text-foreground">{stats.streak || 0}</p>
-                                <p className="text-sm text-muted-foreground">Días racha</p>
+                                <p className="text-2xl font-bold text-foreground">{dailyStats?.currentStreak || stats.streak || 0}</p>
+                                <p className="text-sm text-muted-foreground">Racha Diaria</p>
                             </div>
                         </div>
                     </Card>
@@ -121,14 +167,14 @@ const StudentPuzzles = () => {
                         </div>
                     </Card>
 
-                    <Card className="p-5 bg-card border-border border-b-blue-500 border-b-2">
+                    <Card className="p-5 bg-card border-border border-b-yellow-500 border-b-2">
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
-                                <Trophy className="w-6 h-6 text-blue-500" />
+                            <div className="w-12 h-12 rounded-xl bg-yellow-500/10 flex items-center justify-center">
+                                <Trophy className="w-6 h-6 text-yellow-500" />
                             </div>
                             <div>
-                                <p className="text-2xl font-bold text-foreground">{stats.points || 0}</p>
-                                <p className="text-sm text-muted-foreground">Puntos</p>
+                                <p className="text-2xl font-bold text-foreground">{userRating}</p>
+                                <p className="text-sm text-muted-foreground">Rating ELO</p>
                             </div>
                         </div>
                     </Card>
@@ -158,58 +204,142 @@ const StudentPuzzles = () => {
 
                 {/* Daily Puzzle */}
                 {activeTab === "daily" && (
-                    <div className="grid lg:grid-cols-3 gap-6 items-start">
-                        <Card className="lg:col-span-2 p-6 bg-card border-border h-full flex flex-col justify-center items-center">
-                            {isLoadingDaily ? (
-                                <div className="flex justify-center py-20">
-                                    <Loader2 className="w-10 h-10 animate-spin text-primary" />
-                                </div>
-                            ) : dailyPuzzle ? (
-                                <PuzzleSolver puzzle={dailyPuzzle} />
-                            ) : (
-                                <div className="text-center py-20 text-muted-foreground">
-                                    No hay problema diario disponible.
-                                </div>
-                            )}
-                        </Card>
+                    <div className="grid lg:grid-cols-4 gap-6 items-start">
+                        <div className="lg:col-span-3 space-y-6">
+                            <Card className="p-6 bg-card border-border flex flex-col justify-center items-center min-h-[500px]">
+                                {isLoadingDaily ? (
+                                    <div className="flex justify-center py-20">
+                                        <Loader2 className="w-10 h-10 animate-spin text-primary" />
+                                    </div>
+                                ) : dailyPuzzle ? (
+                                    <PuzzleSolver
+                                        puzzle={dailyPuzzle}
+                                        isDaily={true}
+                                        onSolve={(result) => {
+                                            solveMutation.mutate({
+                                                dailyPuzzleId: dailyPuzzle.dailyPuzzleId,
+                                                moves: result.moves,
+                                                solved: true,
+                                                timeSpent: result.timeSpent
+                                            });
+                                        }}
+                                    />
+                                ) : (
+                                    <div className="text-center py-20 text-muted-foreground">
+                                        No hay problema diario disponible.
+                                    </div>
+                                )}
+                            </Card>
+
+                            {/* Leaderboard Section */}
+                            <Card className="p-6 bg-card border-border">
+                                <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
+                                    <ListOrdered className="w-5 h-5 text-primary" />
+                                    Ranking del Día
+                                </h3>
+                                {isLoadingLeaderboard ? (
+                                    <div className="flex justify-center py-10">
+                                        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                                    </div>
+                                ) : leaderboardData?.leaderboard.length ? (
+                                    <div className="overflow-hidden rounded-lg border border-border">
+                                        <table className="w-full text-sm">
+                                            <thead className="bg-secondary/30">
+                                                <tr>
+                                                    <th className="px-4 py-2 text-left font-bold">#</th>
+                                                    <th className="px-4 py-2 text-left font-bold">Usuario</th>
+                                                    <th className="px-4 py-2 text-right font-bold">Tiempo</th>
+                                                    <th className="px-4 py-2 text-right font-bold">Intentos</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-border">
+                                                {leaderboardData.leaderboard.map((entry) => (
+                                                    <tr key={entry.userId} className={cn("hover:bg-primary/5 transition-colors", entry.rank === 1 && "bg-yellow-500/5")}>
+                                                        <td className="px-4 py-2 font-mono">
+                                                            {entry.rank === 1 ? "🥇" : entry.rank === 2 ? "🥈" : entry.rank === 3 ? "🥉" : entry.rank}
+                                                        </td>
+                                                        <td className="px-4 py-2 font-medium">{entry.userName}</td>
+                                                        <td className="px-4 py-2 text-right font-mono">{entry.timeSpent}s</td>
+                                                        <td className="px-4 py-2 text-right">{entry.attempts}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                ) : (
+                                    <p className="text-sm text-muted-foreground text-center py-10">
+                                        Nadie ha resuelto el puzzle todavía. ¡Sé el primero!
+                                    </p>
+                                )}
+                            </Card>
+                        </div>
 
                         <div className="space-y-6">
                             <Card className="p-6 bg-primary/5 border-primary/20">
                                 <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
                                     <Trophy className="w-5 h-5 text-primary" />
-                                    Detalles del Reto
+                                    Reto de Hoy
                                 </h3>
                                 {dailyPuzzle && (
                                     <div className="space-y-4">
                                         <div className="flex justify-between items-center text-sm py-2 border-b border-primary/10">
-                                            <span className="text-muted-foreground">ID del Problema</span>
-                                            <span className="font-mono font-bold">#{dailyPuzzle.id}</span>
+                                            <span className="text-muted-foreground">ID Interno</span>
+                                            <span className="font-mono font-bold">#{dailyPuzzle.dailyPuzzleId}</span>
                                         </div>
                                         <div className="flex justify-between items-center text-sm py-2 border-b border-primary/10">
-                                            <span className="text-muted-foreground">Juegan</span>
-                                            <Badge variant="secondary">{dailyPuzzle.turn === 'w' ? 'Blancas' : 'Negras'}</Badge>
+                                            <span className="text-muted-foreground">Estado</span>
+                                            <Badge variant={dailyPuzzle.userAttempt?.solved ? "default" : "secondary"}>
+                                                {dailyPuzzle.userAttempt?.solved ? "Resuelto" : "Pendiente"}
+                                            </Badge>
+                                        </div>
+                                        <div className="flex justify-between items-center text-sm py-2 border-b border-primary/10">
+                                            <span className="text-muted-foreground">Intentos</span>
+                                            <span className="font-bold">{dailyPuzzle.userAttempt?.attempts || 0}</span>
                                         </div>
                                         <div className="flex justify-between items-center text-sm py-2 border-b border-primary/10">
                                             <span className="text-muted-foreground">Dificultad</span>
                                             <Badge className={getDifficultyColor(dailyPuzzle.rating)}>
-                                                {dailyPuzzle.rating} ({getDifficultyLabel(dailyPuzzle.rating)})
+                                                {getDifficultyLabel(dailyPuzzle.rating)}
                                             </Badge>
-                                        </div>
-                                        <div className="flex justify-between items-center text-sm py-2 border-b border-primary/10">
-                                            <span className="text-muted-foreground">Recompensa</span>
-                                            <span className="text-green-500 font-bold">+{dailyPuzzle.rating > 1500 ? 50 : 25} pts</span>
                                         </div>
                                     </div>
                                 )}
                             </Card>
 
+                            {/* New Stats Card */}
+                            <Card className="p-6 bg-card border-border">
+                                <h3 className="font-bold text-sm uppercase tracking-widest text-muted-foreground mb-4">Tus Estadísticas</h3>
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2 text-sm">
+                                            <Percent className="w-4 h-4 text-purple-500" />
+                                            <span>Tasa Éxito</span>
+                                        </div>
+                                        <span className="font-bold">{dailyStats?.solveRate || 0}%</span>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2 text-sm">
+                                            <Clock className="w-4 h-4 text-blue-500" />
+                                            <span>Tiempo Medio</span>
+                                        </div>
+                                        <span className="font-bold">{dailyStats?.averageTime || 0}s</span>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2 text-sm">
+                                            <Flame className="w-4 h-4 text-orange-500" />
+                                            <span>Max Racha</span>
+                                        </div>
+                                        <span className="font-bold">{dailyStats?.longestStreak || 0}</span>
+                                    </div>
+                                </div>
+                            </Card>
+
                             <Card className="p-6 bg-secondary/20 border-border">
-                                <h4 className="font-bold text-sm uppercase tracking-widest text-muted-foreground mb-3">Instrucciones</h4>
-                                <ul className="text-sm space-y-2 text-muted-foreground list-disc pl-4">
-                                    <li>Selecciona una pieza y elige su destino.</li>
-                                    <li>Si la jugada es correcta, el oponente responderá.</li>
-                                    <li>Encuentra la secuencia completa para ganar los puntos.</li>
-                                    <li>Usa la pista si te quedas atascado.</li>
+                                <h4 className="font-bold text-sm uppercase tracking-widest text-muted-foreground mb-3">Recompensas</h4>
+                                <ul className="text-xs space-y-2 text-muted-foreground">
+                                    <li className="flex justify-between"><span>1er Intento:</span> <span className="text-green-500 font-bold">+5 ELO</span></li>
+                                    <li className="flex justify-between"><span>2-3 Intentos:</span> <span className="text-green-500/80 font-bold">+3 ELO</span></li>
+                                    <li className="flex justify-between"><span>+3 Intentos:</span> <span className="text-green-500/60 font-bold">+1 ELO</span></li>
                                 </ul>
                             </Card>
                         </div>

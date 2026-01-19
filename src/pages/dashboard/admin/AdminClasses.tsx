@@ -14,8 +14,11 @@ import {
     XCircle,
     BarChart3,
     Loader2,
-    Edit
+    Edit,
+    AlertCircle,
+    Shield
 } from "lucide-react";
+import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import {
@@ -36,6 +39,26 @@ const AdminClasses = () => {
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [editingClass, setEditingClass] = useState<any>(null);
+    const [selectedTeacher, setSelectedTeacher] = useState<string>("");
+    const [selectedGroup, setSelectedGroup] = useState<string>("");
+
+    useEffect(() => {
+        if (!isCreateOpen) {
+            setSelectedTeacher("");
+            setSelectedGroup("");
+        }
+    }, [isCreateOpen]);
+
+    useEffect(() => {
+        if (isEditOpen && editingClass) {
+            setSelectedTeacher(editingClass.teacher_id?.toString() || "");
+            setSelectedGroup(editingClass.group_id?.toString() || "");
+        } else if (!isEditOpen) {
+            setSelectedTeacher("");
+            setSelectedGroup("");
+        }
+    }, [isEditOpen, editingClass]);
+
     const queryClient = useQueryClient();
 
     const { data: classes, isLoading } = useQuery<any[]>({
@@ -43,9 +66,14 @@ const AdminClasses = () => {
         queryFn: () => api.classes.list(),
     });
 
+    const { data: groups } = useQuery<any[]>({
+        queryKey: ["admin-groups"],
+        queryFn: () => api.studentGroups.list(),
+    });
+
     const { data: teachers } = useQuery<any[]>({
         queryKey: ["admin-teachers"],
-        queryFn: () => api.users.list("teacher"),
+        queryFn: () => api.admin.getUsers({ role: "teacher" }),
     });
 
     const createMutation = useMutation({
@@ -87,29 +115,62 @@ const AdminClasses = () => {
     const handleCreateSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
-        const data = {
+
+        const recurringDays = formData.getAll("recurring_days").map(d => parseInt(d as string));
+        const groupId = formData.get("group_id") as string;
+
+        const data: any = {
             title: formData.get("title"),
             level: formData.get("level"),
             start_time: formData.get("start_time"),
-            capacity: parseInt(formData.get("capacity") as string),
-            teacher_id: parseInt(formData.get("teacher_id") as string),
+            video_url: formData.get("video_url") || "",
+            meeting_link: formData.get("meeting_link") || "",
             status: "scheduled",
-            type: "live"
+            recurring_days: recurringDays.length > 0 ? recurringDays : undefined
         };
+
+        if (groupId && groupId !== "") {
+            data.group_id = groupId;
+            data.teacher_id = null;
+        } else {
+            const teacherId = formData.get("teacher_id") as string;
+            if (teacherId) {
+                data.teacher_id = teacherId;
+            }
+            data.group_id = null;
+        }
+
         createMutation.mutate(data);
     };
 
     const handleEditSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
-        const data = {
+        const groupId = formData.get("group_id") as string;
+        const recurringDays = formData.getAll("recurring_days").map(d => parseInt(d as string));
+
+        const data: any = {
             title: formData.get("title"),
             level: formData.get("level"),
             start_time: formData.get("start_time"),
-            capacity: parseInt(formData.get("capacity") as string),
-            teacher_id: parseInt(formData.get("teacher_id") as string),
+            video_url: formData.get("video_url"),
+            meeting_link: formData.get("meeting_link"),
+            status: formData.get("status") || "scheduled",
+            recurring_days: recurringDays.length > 0 ? recurringDays : undefined
         };
-        updateMutation.mutate({ id: editingClass.id, data });
+
+        if (groupId && groupId !== "") {
+            data.group_id = groupId;
+            data.teacher_id = null;
+        } else {
+            const teacherId = formData.get("teacher_id") as string;
+            if (teacherId) {
+                data.teacher_id = teacherId;
+            }
+            data.group_id = null;
+        }
+
+        updateMutation.mutate({ id: (editingClass as any).id, data });
     };
 
     const translateLevel = (level: string) => {
@@ -167,6 +228,7 @@ const AdminClasses = () => {
                                     <Label htmlFor="title">Título de la clase</Label>
                                     <Input id="title" name="title" placeholder="Ej: Fundamentos de Apertura" required className="bg-secondary" />
                                 </div>
+
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <Label htmlFor="level">Nivel</Label>
@@ -177,33 +239,71 @@ const AdminClasses = () => {
                                         </select>
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor="capacity">Capacidad</Label>
-                                        <Input id="capacity" name="capacity" type="number" defaultValue="20" className="bg-secondary" />
+                                        <Label htmlFor="start_time">Fecha y Hora</Label>
+                                        <Input id="start_time" name="start_time" type="datetime-local" required className="bg-secondary" />
                                     </div>
                                 </div>
+
                                 <div className="space-y-2">
-                                    <Label htmlFor="teacher_id">Profesor</Label>
+                                    <Label htmlFor="meeting_link">Enlace de la Reunión (Zoom/Meet/etc)</Label>
+                                    <Input id="meeting_link" name="meeting_link" placeholder="https://..." className="bg-secondary" />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="video_url">URL de Grabación (Opcional)</Label>
+                                    <Input id="video_url" name="video_url" placeholder="https://..." className="bg-secondary" />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="group_id">Restringir a Grupo (Opcional)</Label>
                                     <select
-                                        name="teacher_id"
-                                        id="teacher_id"
+                                        name="group_id"
+                                        id="group_id"
                                         className="w-full h-10 px-3 rounded-md border border-input bg-secondary text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                                        required
+                                        value={selectedGroup}
+                                        onChange={(e) => setSelectedGroup(e.target.value)}
                                     >
-                                        <option value="">Seleccionar profesor</option>
-                                        {teachers?.map((teacher) => (
-                                            <option key={teacher.id} value={teacher.id}>
-                                                {teacher.name}
+                                        <option value="">Clase pública (Abierta a todos)</option>
+                                        {groups?.map((group) => (
+                                            <option key={group.id} value={group.id}>
+                                                {group.name}
                                             </option>
                                         ))}
-                                        {(!teachers || teachers.length === 0) && (
-                                            <option value="1">Maider Quintana (Demo)</option>
-                                        )}
                                     </select>
                                 </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="start_time">Fecha y Hora</Label>
-                                    <Input id="start_time" name="start_time" type="datetime-local" required className="bg-secondary" />
+
+                                {!selectedGroup && (
+                                    <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                                        <Label htmlFor="teacher_id">Asignar Profesor</Label>
+                                        <select
+                                            name="teacher_id"
+                                            id="teacher_id"
+                                            className="w-full h-10 px-3 rounded-md border border-input bg-secondary text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                                            value={selectedTeacher}
+                                            onChange={(e) => setSelectedTeacher(e.target.value)}
+                                        >
+                                            <option value="">Ninguno (Sin profesor asignado)</option>
+                                            {teachers?.map((teacher) => (
+                                                <option key={teacher.id} value={teacher.id}>
+                                                    {teacher.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                )}
+
+                                <div className="space-y-3 pt-4 border-t border-border mt-2">
+                                    <Label>Días de Repetición (Opcional)</Label>
+                                    <div className="flex flex-wrap gap-2">
+                                        {['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].map((day, i) => (
+                                            <label key={i} className="flex items-center gap-1 bg-secondary/50 px-2 py-1 rounded-md cursor-pointer hover:bg-secondary transition-colors">
+                                                <input type="checkbox" name="recurring_days" value={i} className="w-3 h-3" />
+                                                <span className="text-xs">{day}</span>
+                                            </label>
+                                        ))}
+                                    </div>
                                 </div>
+
                                 <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={createMutation.isPending}>
                                     {createMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : "Confirmar Programación"}
                                 </Button>
@@ -227,6 +327,7 @@ const AdminClasses = () => {
                                     <Label htmlFor="edit-title">Título de la clase</Label>
                                     <Input id="edit-title" name="title" defaultValue={editingClass.title} required className="bg-secondary" />
                                 </div>
+
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <Label htmlFor="edit-level">Nivel</Label>
@@ -237,40 +338,94 @@ const AdminClasses = () => {
                                         </select>
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor="edit-capacity">Capacidad</Label>
-                                        <Input id="edit-capacity" name="capacity" type="number" defaultValue={editingClass.capacity} className="bg-secondary" />
+                                        <Label htmlFor="edit-start_time">Fecha y Hora</Label>
+                                        <Input
+                                            id="edit-start_time"
+                                            name="start_time"
+                                            type="datetime-local"
+                                            defaultValue={new Date(editingClass.start_time).toISOString().slice(0, 16)}
+                                            required
+                                            className="bg-secondary"
+                                        />
                                     </div>
                                 </div>
+
                                 <div className="space-y-2">
-                                    <Label htmlFor="edit-start_time">Fecha y Hora</Label>
-                                    <Input
-                                        id="edit-start_time"
-                                        name="start_time"
-                                        type="datetime-local"
-                                        defaultValue={new Date(editingClass.start_time).toISOString().slice(0, 16)}
-                                        required
-                                        className="bg-secondary"
-                                    />
+                                    <Label htmlFor="edit-meeting_link">Enlace de la Reunión</Label>
+                                    <Input id="edit-meeting_link" name="meeting_link" defaultValue={editingClass.meeting_link} placeholder="https://..." className="bg-secondary" />
                                 </div>
+
                                 <div className="space-y-2">
-                                    <Label htmlFor="edit-teacher">Profesor</Label>
+                                    <Label htmlFor="edit-video_url">URL de Grabación</Label>
+                                    <Input id="edit-video_url" name="video_url" defaultValue={editingClass.video_url} placeholder="https://..." className="bg-secondary" />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="edit-status">Estado</Label>
+                                    <select id="edit-status" name="status" defaultValue={editingClass.status || "scheduled"} className="w-full h-10 px-3 rounded-md border border-input bg-secondary text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                                        <option value="scheduled">Programada</option>
+                                        <option value="live">En Vivo</option>
+                                        <option value="completed">Completada</option>
+                                        <option value="canceled">Cancelada</option>
+                                    </select>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="edit-teacher" className={selectedGroup ? "opacity-50" : ""}>Profesor</Label>
                                     <select
                                         name="teacher_id"
                                         id="edit-teacher"
-                                        className="w-full h-10 px-3 rounded-md border border-input bg-secondary text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                                        defaultValue={editingClass.teacher_id}
-                                        required
+                                        className="w-full h-10 px-3 rounded-md border border-input bg-secondary text-sm focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
+                                        value={selectedTeacher}
+                                        onChange={(e) => setSelectedTeacher(e.target.value)}
+                                        disabled={!!selectedGroup}
                                     >
+                                        <option value="">Ninguno</option>
                                         {teachers?.map((teacher) => (
                                             <option key={teacher.id} value={teacher.id}>
                                                 {teacher.name}
                                             </option>
                                         ))}
-                                        {(!teachers || teachers.length === 0) && (
-                                            <option value="1">Maider Quintana (Demo)</option>
-                                        )}
                                     </select>
                                 </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="edit-group_id" className={selectedTeacher ? "opacity-50" : ""}>Grupo (Opcional)</Label>
+                                    <select
+                                        name="group_id"
+                                        id="edit-group_id"
+                                        className="w-full h-10 px-3 rounded-md border border-input bg-secondary text-sm focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
+                                        value={selectedGroup}
+                                        onChange={(e) => setSelectedGroup(e.target.value)}
+                                        disabled={!!selectedTeacher}
+                                    >
+                                        <option value="">Ninguno (Público)</option>
+                                        {groups?.map((group) => (
+                                            <option key={group.id} value={group.id}>
+                                                {group.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div className="space-y-3 pt-4 border-t border-border">
+                                    <Label>Días de Repetición</Label>
+                                    <div className="flex flex-wrap gap-2">
+                                        {['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].map((day, i) => (
+                                            <label key={i} className="flex items-center gap-1 bg-secondary/50 px-2 py-1 rounded-md cursor-pointer hover:bg-secondary transition-colors">
+                                                <input
+                                                    type="checkbox"
+                                                    name="recurring_days"
+                                                    value={i}
+                                                    defaultChecked={editingClass.recurring_days?.includes(i)}
+                                                    className="w-3 h-3"
+                                                />
+                                                <span className="text-xs">{day}</span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
+
                                 <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={updateMutation.isPending}>
                                     {updateMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : "Guardar Cambios"}
                                 </Button>
@@ -344,7 +499,7 @@ const AdminClasses = () => {
                                                     {translateLevel(clase.level)}
                                                 </Badge>
                                             </div>
-                                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-2">
+                                            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
                                                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                                     <Calendar className="w-4 h-4" />
                                                     {new Date(clase.start_time).toLocaleDateString("es-ES")}
@@ -353,14 +508,17 @@ const AdminClasses = () => {
                                                     <Clock className="w-4 h-4" />
                                                     {new Date(clase.start_time).toLocaleTimeString("es-ES", { hour: '2-digit', minute: '2-digit' })}
                                                 </div>
-                                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                                    <Users className="w-4 h-4" />
-                                                    {clase.capacity || 20} máx.
-                                                </div>
-                                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                                    <Video className="w-4 h-4" />
-                                                    {clase.type || "Live"}
-                                                </div>
+                                                {clase.group_name ? (
+                                                    <div className="flex items-center gap-2 text-sm text-accent font-medium">
+                                                        <Users className="w-4 h-4" />
+                                                        Grupo: {clase.group_name}
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex items-center gap-2 text-sm text-blue-500 font-medium">
+                                                        <Shield className="w-4 h-4" />
+                                                        Clase Pública
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                         <div className="flex gap-2">

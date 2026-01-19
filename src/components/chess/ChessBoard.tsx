@@ -38,10 +38,14 @@ interface ChessBoardProps {
 }
 
 const parseFen = (fen: string): (string | null)[][] => {
+  if (!fen) return initialPosition;
   const [boardPart] = fen.split(' ');
-  const rows = boardPart.split('/');
-  const position: (string | null)[][] = [];
+  if (!boardPart) return initialPosition;
 
+  const rows = boardPart.split('/');
+  if (rows.length !== 8) return initialPosition;
+
+  const position: (string | null)[][] = [];
   for (const row of rows) {
     const boardRow: (string | null)[] = [];
     for (const char of row) {
@@ -54,6 +58,8 @@ const parseFen = (fen: string): (string | null)[][] => {
         }
       }
     }
+    // Si la fila no tiene 8 columnas, algo va mal
+    if (boardRow.length !== 8) return initialPosition;
     position.push(boardRow);
   }
 

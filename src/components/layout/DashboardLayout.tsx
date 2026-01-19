@@ -12,6 +12,7 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
+  Medal,
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -53,6 +54,7 @@ export const DashboardLayout = ({ children, role = "student" }: DashboardLayoutP
   const [collapsed, setCollapsed] = useState(false);
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
@@ -65,25 +67,58 @@ export const DashboardLayout = ({ children, role = "student" }: DashboardLayoutP
     { to: "/dashboard/problemas", icon: <Target className="w-5 h-5" />, label: "Problemas" },
     { to: "/dashboard/cursos", icon: <BookOpen className="w-5 h-5" />, label: "Cursos" },
     { to: "/dashboard/progreso", icon: <BarChart3 className="w-5 h-5" />, label: "Mi Progreso" },
+    { to: "/dashboard/logros", icon: <Medal className="w-5 h-5" />, label: "Logros" },
   ];
 
   const adminLinks = [
     { to: "/admin", icon: <LayoutDashboard className="w-5 h-5" />, label: "Dashboard" },
-    { to: "/admin/alumnos", icon: <Users className="w-5 h-5" />, label: "Alumnos" },
+    { to: "/admin/usuarios", icon: <Users className="w-5 h-5" />, label: "Usuarios" },
     { to: "/admin/clases", icon: <GraduationCap className="w-5 h-5" />, label: "Clases" },
     { to: "/admin/problemas", icon: <Target className="w-5 h-5" />, label: "Problemas" },
     { to: "/admin/contenido", icon: <BookOpen className="w-5 h-5" />, label: "Contenido" },
     { to: "/admin/estadisticas", icon: <BarChart3 className="w-5 h-5" />, label: "Estadísticas" },
+    { to: "/admin/configuracion", icon: <Settings className="w-5 h-5" />, label: "Configuración" },
   ];
 
   const links = role === "admin" ? adminLinks : studentLinks;
 
+  // Mobile navigation - only show first 4 most important links
+  const mobileLinks = links.slice(0, 4);
+
   return (
-    <div className="min-h-screen bg-background flex">
-      {/* Sidebar */}
+    <div className="min-h-screen bg-background flex flex-col md:flex-row">
+      {/* Mobile Header */}
+      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-sidebar border-b border-sidebar-border z-50 flex items-center px-4 justify-between">
+        <Link to="/" className="flex items-center gap-3">
+          <img
+            src="/logo.png"
+            alt="Club Reino Ajedrez"
+            className="w-8 h-8 rounded-lg object-cover shadow-lg shadow-primary/25 shrink-0"
+          />
+          <span className="text-sm font-serif font-bold text-sidebar-foreground">
+            Club Reino Ajedrez
+          </span>
+        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            to="/dashboard/configuracion"
+            className="p-2 text-muted-foreground hover:text-foreground"
+          >
+            <Settings className="w-5 h-5" />
+          </Link>
+          <button
+            onClick={handleLogout}
+            className="p-2 text-muted-foreground hover:text-destructive"
+          >
+            <LogOut className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+
+      {/* Sidebar - Desktop */}
       <aside
         className={cn(
-          "fixed left-0 top-0 h-full bg-sidebar border-r border-sidebar-border transition-all duration-300 z-50 flex flex-col",
+          "hidden md:flex fixed left-0 top-0 h-full bg-sidebar border-r border-sidebar-border transition-all duration-300 z-50 flex-col",
           collapsed ? "w-16" : "w-64"
         )}
       >
@@ -140,11 +175,37 @@ export const DashboardLayout = ({ children, role = "student" }: DashboardLayoutP
         </button>
       </aside>
 
+      {/* Mobile Bottom Nav */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-sidebar border-t border-sidebar-border z-50 pb-safe">
+        <nav className="flex items-center justify-around p-2">
+          {mobileLinks.map((link) => {
+            const isActive = location.pathname === link.to;
+            return (
+              <Link
+                key={link.to}
+                to={link.to}
+                className={cn(
+                  "flex flex-col items-center gap-1 p-2 min-w-[70px] rounded-lg transition-all",
+                  isActive
+                    ? "text-primary"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                )}
+              >
+                {link.icon}
+                <span className="text-[10px] font-medium truncate max-w-full text-center">
+                  {link.label}
+                </span>
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
+
       {/* Main content */}
       <main
         className={cn(
-          "flex-1 transition-all duration-300",
-          collapsed ? "ml-16" : "ml-64"
+          "flex-1 transition-all duration-300 min-h-screen pt-16 pb-20 md:pt-0 md:pb-0",
+          collapsed ? "md:ml-16" : "md:ml-64"
         )}
       >
         {children}

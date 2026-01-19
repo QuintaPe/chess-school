@@ -10,38 +10,29 @@ import {
   CreditCard,
   Plus,
   Play,
+  MessageSquare,
   ArrowRight,
   MoreVertical,
   Calendar,
   Loader2,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
-  const { data: students, isLoading: loadingStudents } = useQuery<any[]>({
-    queryKey: ["admin-students"],
-    queryFn: () => api.users.list("student"),
+
+  const { data: dashboardData, isLoading } = useQuery({
+    queryKey: ["admin-dashboard-stats"],
+    queryFn: () => api.admin.getDashboardStats(),
   });
 
-  const { data: classes, isLoading: loadingClasses } = useQuery<any[]>({
-    queryKey: ["admin-classes"],
-    queryFn: () => api.classes.list(),
-  });
-
-  const { data: puzzles, isLoading: loadingPuzzles } = useQuery<any[]>({
-    queryKey: ["admin-puzzles"],
-    queryFn: () => api.puzzles.list(),
-  });
-
-  const { data: courses, isLoading: loadingCourses } = useQuery<any[]>({
-    queryKey: ["admin-courses"],
-    queryFn: () => api.courses.list(),
-  });
-
-  const isLoading = loadingStudents || loadingClasses || loadingPuzzles || loadingCourses;
+  const students = dashboardData?.students || [];
+  const classes = dashboardData?.classes || [];
+  const puzzles = dashboardData?.puzzles || [];
+  const courses = dashboardData?.courses || [];
 
   const stats = [
     {
@@ -126,7 +117,13 @@ const AdminDashboard = () => {
           {stats.map((stat, i) => (
             <Card key={i} className="p-6 bg-card border-border hover:border-primary/40 transition-colors group">
               <div className="flex items-start justify-between">
-                <div className={`w-12 h-12 rounded-xl bg-${stat.color}-500/10 flex items-center justify-center`}>
+                <div className={cn(
+                  "w-12 h-12 rounded-xl flex items-center justify-center",
+                  stat.color === 'primary' ? "bg-primary/10" :
+                    stat.color === 'accent' ? "bg-accent/10" :
+                      stat.color === 'blue' ? "bg-blue-500/10" :
+                        stat.color === 'green' ? "bg-green-500/10" : "bg-secondary"
+                )}>
                   {stat.icon}
                 </div>
               </div>
@@ -183,8 +180,14 @@ const AdminDashboard = () => {
                           </span>
                           <span className="text-xs text-primary font-medium">{clase.level}</span>
                         </div>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-primary">
-                          <Play className="w-4 h-4" />
+                        <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-primary" onClick={() => {
+                          if (clase.video_url) window.open(clase.video_url, '_blank');
+                        }}>
+                          {clase.platform === 'discord' ? (
+                            <MessageSquare className="w-4 h-4" />
+                          ) : (
+                            <Play className="w-4 h-4" />
+                          )}
                         </Button>
                       </div>
                     </div>
@@ -232,12 +235,12 @@ const AdminDashboard = () => {
           <Button
             variant="outline"
             className="h-24 flex flex-col items-center justify-center gap-2 border-dashed hover:border-accent/50 hover:bg-accent/5 group"
-            onClick={() => navigate('/admin/alumnos')}
+            onClick={() => navigate('/admin/usuarios')}
           >
             <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center group-hover:scale-110 transition-transform">
               <Users className="w-4 h-4 text-accent" />
             </div>
-            <span className="text-xs font-medium">Gestionar Alumnos</span>
+            <span className="text-xs font-medium">Gestionar Usuarios</span>
           </Button>
           <Button
             variant="outline"

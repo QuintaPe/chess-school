@@ -9,6 +9,7 @@ import {
     Users,
     BookOpen,
     Play,
+    MessageSquare,
     CheckCircle2,
     XCircle,
     AlertCircle,
@@ -16,12 +17,15 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
 
 const StudentClasses = () => {
     const [activeTab, setActiveTab] = useState<"upcoming" | "completed">("upcoming");
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
 
     const { data: classes, isLoading, isError } = useQuery<any[]>({
         queryKey: ["classes"],
@@ -29,7 +33,7 @@ const StudentClasses = () => {
     });
 
     const registerMutation = useMutation({
-        mutationFn: (id: number) => api.classes.register(id),
+        mutationFn: (id: string | number) => api.classes.register(id),
         onSuccess: () => {
             toast.success("¡Inscrito con éxito!");
             queryClient.invalidateQueries({ queryKey: ["classes"] });
@@ -39,8 +43,14 @@ const StudentClasses = () => {
         }
     });
 
+    const { user } = useAuth();
     const upcomingClasses = classes?.filter(c => new Date(c.start_time) > new Date()) || [];
     const completedClasses = classes?.filter(c => new Date(c.start_time) <= new Date()) || [];
+
+    const hasAccess = (clase: any) => {
+        if (user?.role === 'admin' || user?.role === 'teacher') return true;
+        return !!(clase.can_access || clase.is_registered || clase.registered || clase.isRegistered || clase.enrolled);
+    };
 
     const translateLevel = (level: string) => {
         switch (level) {
@@ -149,12 +159,18 @@ const StudentClasses = () => {
                                                 </h3>
                                                 <p className="text-sm text-muted-foreground flex items-center gap-2">
                                                     <Users className="w-4 h-4" />
-                                                    Profesor: {clase.teacher_id === 1 ? 'Maider Quintana' : 'Admin'}
+                                                    Profesor: {clase.teacher_name || 'Profesor asignado'}
                                                 </p>
                                             </div>
-                                            <Badge className="bg-green-500/10 text-green-500 border-green-500/20">
-                                                <CheckCircle2 className="w-3 h-3 mr-1" />Confirmada
-                                            </Badge>
+                                            {hasAccess(clase) ? (
+                                                <Badge className="bg-green-500/10 text-green-500 border-green-500/20">
+                                                    <CheckCircle2 className="w-3 h-3 mr-1" />Inscrito
+                                                </Badge>
+                                            ) : (
+                                                <Badge variant="outline" className="text-muted-foreground border-border">
+                                                    Disponible
+                                                </Badge>
+                                            )}
                                         </div>
 
                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
@@ -180,13 +196,13 @@ const StudentClasses = () => {
                                         </div>
 
                                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                            <Users className="w-4 h-4" />
-                                            <span>Capacidad: {clase.capacity || 20} estudiantes</span>
+                                            <Video className="w-4 h-4" />
+                                            <span>Clase en Vivo</span>
                                         </div>
                                     </div>
 
                                     <div className="flex flex-col gap-2">
-                                        {clase.isRegistered ? (
+                                        {hasAccess(clase) ? (
                                             <Button
                                                 variant="hero"
                                                 className="w-full lg:w-auto"
@@ -194,17 +210,22 @@ const StudentClasses = () => {
                                                     const startTime = new Date(clase.start_time).getTime();
                                                     const now = new Date().getTime();
                                                     const diff = startTime - now;
+                                                    const platform = (clase.platform || 'zoom').toLowerCase();
 
-                                                    if (diff <= 15 * 60 * 1000) { // 15 mins before
-                                                        toast.info("Conectando con la sala de Zoom...");
-                                                        if (clase.video_url) window.open(clase.video_url, '_blank');
+                                                    // Allow joining Discord channels anytime if registered, others 30 mins before
+                                                    if (platform === 'discord' || diff <= 30 * 60 * 1000) {
+                                                        navigate(`/clases/${clase.id}/live`);
                                                     } else {
-                                                        toast.info("La clase comenzará en breve. Podrás unirte 15 minutos antes.");
+                                                        toast.info("La clase comenzará pronto. Podrás acceder 30 minutos antes de la hora programada.");
                                                     }
                                                 }}
                                             >
-                                                <Play className="w-4 h-4 mr-2" />
-                                                Unirse
+                                                {clase.platform === 'discord' ? (
+                                                    <MessageSquare className="w-4 h-4 mr-2" />
+                                                ) : (
+                                                    <Play className="w-4 h-4 mr-2" />
+                                                )}
+                                                {clase.platform === 'discord' ? 'Unirse a Discord' : 'Unirse a Clase'}
                                             </Button>
                                         ) : (
                                             <Button

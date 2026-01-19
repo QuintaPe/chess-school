@@ -27,6 +27,9 @@ export const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) 
 
     if (allowedRoles && user && !allowedRoles.includes(user.role)) {
         // User authorized but not for this role
+        if (user.role === 'admin' || user.role === 'teacher') {
+            return <Navigate to="/admin" replace />;
+        }
         // Redirect to their appropriate dashboard or home
         return <Navigate to="/dashboard" replace />;
     }
